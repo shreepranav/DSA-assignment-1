@@ -245,39 +245,58 @@ Chunk *scan_sequence()
 {
     Chunk *head = NULL;
     Chunk *p = head;
-    while (1)
+    int i;
+
+    while (scanf("%d,", &i))
     {
-        int i;
-        int rc = scanf("%d", &i);
-        if (rc == EOF || rc == 0)
-            break;
-        if (p == NULL || p->filled == CHUNK_SIZE)
-            p = insert(&head, p, 0);
-        p->data[p->filled++] = i;
-
-        char c = getchar();
-        if (c == '\n')
-            break;
-
-        if (c != ',')
+        if (head == NULL || p->filled == CHUNK_SIZE)
         {
-            printf("Bad Input! Invalid character '%c' encountered instead of comma!\n", c);
-            exit(1);
+            if (head == NULL)
+                head = p = (Chunk *)malloc(sizeof(Chunk));
+            else
+            {
+                p->next = (Chunk *)malloc(sizeof(Chunk));
+                p = p->next;
+            }
+            p->filled = 0;
+            p->next = NULL;
         }
+        p->data[p->filled++] = i;
     }
+    while (getchar() != '$');
+    while (getchar() != '\n');
     return head;
 }
 
 int main()
 {
-    Chunk *head = scan_sequence();
+    char c = 'y';
+    printf("Enter input sequence: ");
+    Chunk *seq = scan_sequence();
+    sequence_print(seq);
+    while (c == 'y')
+    {
+        printf("Enter pattern: ");
+        Chunk *pattern = scan_sequence();
+        sequence_print(pattern);
+        printf("Enter text: ");
+        Chunk *text = scan_sequence();
+        sequence_print(text);
+        printf("Sequence after replacement: ");
+        replace_2(&seq, pattern, text);
+        sequence_print(seq);
+        printf("Do you wish to continue (y/n): ");
+        c = getchar();
+        printf("%c\n\n", c);
+    }
+    //Chunk *head = scan_sequence();
     //    Position write = {head, 1};
     //    Position read = {head, 3};
 
-    Chunk *pattern = scan_sequence();
-    Chunk *text = scan_sequence();
-    replace_2(&head, pattern, text);
-    sequence_print(head);
+//    Chunk *pattern = scan_sequence();
+//    Chunk *text = scan_sequence();
+//    replace_2(&head, pattern, text);
+    //sequence_print(head);
     //    replace_2(&head, pattern, text);
 
     /*
