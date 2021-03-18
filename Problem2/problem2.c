@@ -116,7 +116,7 @@ Node *scan_p()
             break;
         insert(&head, &tail, tail, i, j, a);
         scanf(",");
-        //printf("(%d,%d,%f)\n", term->i, term->j, term->a);
+        // printf("(%d,%d,%f)\n", term->i, term->j, term->a);
     }
     while (1)
     {
