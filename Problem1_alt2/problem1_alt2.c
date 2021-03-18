@@ -66,15 +66,7 @@ Chunk *delete (Chunk **headp, Chunk *position)
         *headp = temp;
         return temp;
     }
-    /*
-    if ((*headp)->next == position)
-    {
-        (*headp)->next = position->next;
-        chunk *temp = position->next;
-        free(position);
-        return temp;
-    }
-    */
+    
     Chunk *p = *headp;
     for (; p != NULL && p->next != position; p = p->next)
         ;
@@ -90,14 +82,20 @@ Chunk *delete (Chunk **headp, Chunk *position)
 //and the last added chunk is returned. If no chunk is added, write.chunk is returned.
 void make_room(Position *read, Position *write, int len_t)
 {
+    // Calculating gap between read and write positions
     int gap = read->index - write->index;
     for (Chunk *p = write->chunk; p != read->chunk; p = p->next)
+    {
+        p->filled = CHUNK_SIZE;
         gap += CHUNK_SIZE;
+    }
+
     if (len_t < gap)
         return;
 
     int chunks_to_add = (len_t - gap + CHUNK_SIZE - 1) / CHUNK_SIZE;
 
+    // Add the necessary chunks after write->chunk
     Chunk *cur = write->chunk, *temp = write->chunk->next;
     for (int i = 0; i < chunks_to_add; i++)
     {
@@ -107,6 +105,7 @@ void make_room(Position *read, Position *write, int len_t)
     }
     cur->next = temp;
 
+    // If read->chunk is the same as write->chunk, read->chunk is updated to the last inserted chunk
     if (read->chunk == write->chunk)
     {
         cur->filled = read->chunk->filled;
@@ -150,25 +149,22 @@ void remove_excess(Position *read, Position *write)
     return;
 }
 
+// Compares pattern with target starting from position and returns 1 if it's a match, and 0 if not
+// Returns 0 if pattern is empty
 int compare(Chunk *pattern, Chunk *target, int position)
 {
     if (pattern == NULL)
         return 0;
-    int i = 0;
-    while (pattern->next != NULL || i < pattern->filled)
+
+    Position p = {pattern, 0};
+    Position q = {target, position};
+    while (p.chunk != NULL)
     {
-        if (target == NULL ||
-            (target->next == NULL && position >= target->filled) ||
-            (pattern->data[i % CHUNK_SIZE] != target->data[position % CHUNK_SIZE]))
+        if (q.chunk == NULL || p.chunk->data[p.index] != q.chunk->data[q.index])
             return 0;
 
-        i = (i + 1) % CHUNK_SIZE;
-        if (i == 0)
-            pattern = pattern->next;
-
-        position = (position + 1) % CHUNK_SIZE;
-        if (position == 0)
-            target = target->next;
+        increment_pos(&p, 1);
+        increment_pos(&q, 1);
     }
     return 1;
 }
@@ -188,46 +184,55 @@ void replace_2(Chunk **seqp, Chunk *pattern, Chunk *text)
     Position read = {*seqp, 0}, write = {*seqp, 0};
     if (len_p == 0)
     {
-        return;
-    }
-    else
-    {
-        while (read.chunk != NULL)
+        make_room(&read, &write, len_t);
+        Position temp = {text, 0};
+        while (temp.chunk != NULL)
         {
-            // some comment
-            if (compare(pattern, read.chunk, read.index) == 1)
+            write.chunk->data[write.index] = temp.chunk->data[temp.index];
+            increment_pos(&temp, 1);
+            if (read.chunk || temp.chunk)
+                increment_pos(&write, 1);
+        }
+        remove_excess(&read, &write);
+    }
+
+    while (read.chunk != NULL)
+    {
+        // some comment
+        if (compare(pattern, read.chunk, read.index) == 1)
+        {
+            increment_pos(&read, len_p);
+            make_room(&read, &write, len_t);
+            Position temp = {text, 0};
+            while (temp.chunk != NULL)
             {
-                increment_pos(&read, len_p);
-                make_room(&read, &write, len_t);
-                Position temp = {text, 0};
-                while (temp.chunk != NULL)
-                {
-                    write.chunk->data[write.index] = temp.chunk->data[temp.index];
-                    increment_pos(&temp, 1);
-                    if (read.chunk || temp.chunk)
-                        increment_pos(&write, 1);
-                }
-                remove_excess(&read, &write);
-            }
-            else
-            {
-                write.chunk->data[write.index] = read.chunk->data[read.index];
-                increment_pos(&read, 1);
-                if (read.chunk)
+                write.chunk->data[write.index] = temp.chunk->data[temp.index];
+                increment_pos(&temp, 1);
+                if (read.chunk || temp.chunk)
                     increment_pos(&write, 1);
             }
+            remove_excess(&read, &write);
         }
-
-        //CLEANUP! - Remove all chunks after write->chunk
-
-        while (write.chunk->next != NULL)
+        else
         {
-            Chunk *temp = write.chunk->next;
-            write.chunk->next = temp->next;
-            free(temp);
+            if (len_p == 0 && read.index == write.index)
+                break;
+            write.chunk->data[write.index] = read.chunk->data[read.index];
+            increment_pos(&read, 1);
+            if (read.chunk)
+                increment_pos(&write, 1);
         }
-        write.chunk->filled = write.index + 1;
     }
+
+    //CLEANUP! - Remove all chunks after write->chunk
+
+    while (write.chunk->next != NULL)
+    {
+        Chunk *temp = write.chunk->next;
+        write.chunk->next = temp->next;
+        free(temp);
+    }
+    write.chunk->filled = write.index + 1;
 }
 
 void sequence_print(Chunk *head)
@@ -264,8 +269,10 @@ Chunk *scan_sequence()
         }
         p->data[p->filled++] = i;
     }
-    while (getchar() != '$');
-    while (getchar() != '\n');
+    while (getchar() != '$')
+        ;
+    while (getchar() != '\n')
+        ;
     return head;
 }
 
@@ -275,7 +282,7 @@ int main()
     printf("Enter input sequence: ");
     Chunk *seq = scan_sequence();
     sequence_print(seq);
-    while (c == 'y')
+    while (c == 'y' || c == 'Y')
     {
         printf("Enter pattern: ");
         Chunk *pattern = scan_sequence();
@@ -290,26 +297,6 @@ int main()
         c = getchar();
         printf("%c\n\n", c);
     }
-    //Chunk *head = scan_sequence();
-    //    Position write = {head, 1};
-    //    Position read = {head, 3};
 
-//    Chunk *pattern = scan_sequence();
-//    Chunk *text = scan_sequence();
-//    replace_2(&head, pattern, text);
-    //sequence_print(head);
-    //    replace_2(&head, pattern, text);
-
-    /*
-    printf("Sequence: ");
-    sequence_print(head);
-    printf("Pattern: ");
-    sequence_print(pattern);
-    printf("Text: ");
-    sequence_print(text);
-    replace(&head, pattern, text);
-    printf("New Sequence: ");
-    sequence_print(head);
-*/
     return 0;
 }
