@@ -194,6 +194,7 @@ void replace_2(Chunk **seqp, Chunk *pattern, Chunk *text)
     {
         while (read.chunk != NULL)
         {
+            // some comment
             if (compare(pattern, read.chunk, read.index) == 1)
             {
                 increment_pos(&read, len_p);
