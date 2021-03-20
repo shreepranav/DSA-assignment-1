@@ -9,7 +9,9 @@ typedef struct Node
     struct Node *next, *prev;
 } Node;
 
-//Returns 0 if two terms have same degree, 1 if term1 is greater and -1 if term2 is greater
+// The first term is considered to be x^i1*y^j1 and the second term is x^i2*y^j2
+// Returns 0 if two terms have same degree, 1 if term1 is greater and -1 if 
+// term2 is greater
 int compare(int i1, int j1, int i2, int j2)
 {
     if (i1 + j1 == i2 + j2)
@@ -21,7 +23,8 @@ int compare(int i1, int j1, int i2, int j2)
     return (i1 + j1 < i2 + j2) ? -1 : 1;
 }
 
-// Deletes term (frees it) and returns the address of the previous term (NULL if first term was deleted)
+// Deletes term (frees it) and returns the address of the previous term (NULL if
+// first term was deleted)
 Node *delete (Node **headp, Node **tailp, Node *term)
 {
     if (*headp == NULL || term == NULL)
@@ -54,8 +57,8 @@ Node *delete (Node **headp, Node **tailp, Node *term)
     return result;
 }
 
-//Inserts (i,j,a) after "place"
-//If "place" is NULL, (i,j,a) is inserted at the beginning
+// Inserts (i,j,a) after "place"
+// If "place" is NULL, (i,j,a) is inserted at the beginning
 void insert(Node **headp, Node **tailp, Node *place, int i, int j, float a)
 {
     Node *term = (Node *)malloc(sizeof(Node));
@@ -86,7 +89,7 @@ void list_print(Node *head)
 {
     Node *tail = NULL;
     if (head == NULL)
-        printf("0\n");
+        printf("(0,0,0)");
     for (Node *p = head; p != NULL; p = p->next)
     {
         printf("(%d,%d,%g)", p->i, p->j, p->a);
@@ -106,7 +109,6 @@ void list_print(Node *head)
 Node *scan_p()
 {
     Node *head = NULL, *tail = NULL;
-    //printf("Scanned: \n");
     while (1)
     {
         int i, j;
@@ -116,7 +118,6 @@ Node *scan_p()
             break;
         insert(&head, &tail, tail, i, j, a);
         scanf(",");
-        // printf("(%d,%d,%f)\n", term->i, term->j, term->a);
     }
     while (1)
     {
@@ -212,32 +213,17 @@ void list_free(Node *cur)
     }
 }
 
-void test_delete()
-{
-    Node *head = NULL, *tail = NULL;
-    for (int i = 0; i < 6; i++)
-    {
-        insert(&head, &tail, tail, i, 2, 3.0);
-    }
-    list_print(head);
-    Node *t = delete (&head, &tail, head->next);
-    list_print(head);
-    printf("t value = %d", t->i);
-}
-
 int main()
 {
-    //(1,2,3.4),(2,3,5.6),(5,1,2.0),(3,1,3.4)
-    //printf("Hello World!\n");
-    int rc;
+    char cont = 'y';
     char op;
     Node *result;
 
-    while (1)
+    while (cont == 'y')
     {
-        rc = scanf("%c", &op);
-        if (rc == EOF)
-            break;
+        printf("Please enter the operator(+/*): ");
+        scanf("%c", &op);
+        printf("%c\n", op);
         while (1)
         {
             char c;
@@ -245,8 +231,12 @@ int main()
             if (c == '\n')
                 break;
         }
+        printf("Please enter polynomial A: ");
         Node *p1 = scan_p();
+        list_print(p1);
+        printf("Please enter polynomial B: ");
         Node *p2 = scan_p();
+        list_print(p2);
         if (op == '+')
             result = add(p1, p2);
         else if (op == '*')
@@ -256,21 +246,21 @@ int main()
             printf("'%c' is an invalid operation!", op);
             exit(1);
         }
+        printf("A%cB: ", op);
         list_print(result);
         list_free(p1);
         list_free(p2);
         list_free(result);
+        printf("Do you want to continue? (y/n): ");
+        cont = getchar();
+        printf("%c\n\n", cont);
+        while (1)
+        {
+            char c;
+            scanf("%c", &c);
+            if (c == '\n')
+                break;
+        }
     }
-
-    /*
-    Node *p1 = scan_p();
-    Node *p2 = scan_p();
-    Node *p3 = mul(p1, p2);
-    list_print(p3);
-    list_free(p1);
-    list_free(p2);
-    list_free(p3);
-    
     return 0;
-*/
 }

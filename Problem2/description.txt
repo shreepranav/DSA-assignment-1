@@ -1,0 +1,19 @@
+Throughout this description, a term p is said to be of higher degree than term q
+if p appears to the left of q in a sorted polynomial.
+
+Compare is a helper function which compares the degree of two terms.
+
+For addition, since each polynomial is sorted, we have one pointer for each 
+polynomial which only move to the right. At any time, the higher of the two
+terms pointed to by p1 and p2 (if they don't have the same degree) is appended 
+to the result, and that corresponding pointer is shifter do the right. If the 
+terms have same degree, then they are merged into one term whose coefficient is 
+the sum of the two coefficients. In case the sum is zero, this term is deleted
+from the result.
+
+For multiplication, the first term of A is multiplied with all B and stored in 
+result. Then, the second term of A is multiplied with each term of B (from left 
+to right), and after each multiplication, the term obtained is inserted into
+result in the appropriate place. If the degree of the new term matches the 
+degree of an existing term in result, the two terms are combined. This procedure
+is carried out for each term of A to obtain the product polynomial.
