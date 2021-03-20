@@ -1,0 +1,23 @@
+Each Chunk contains an array of size CHUNK_SIZE called data, and an int called
+filled, which tells how much of data is filled. Another struct called Position
+is introduced, which stores a pointer to a Chunk and an integer called index.
+This struct represents a position in the sequence. An increment function is used
+which shifts position by any number of places to the right.
+
+The idea of the algorithm is to have two positions: "read" and "write", both
+starting at the beginning of the  sequence. We start comparing pattern with the
+part of the sequence starting at read. If there is no match, the integer at
+"read" is written in at "write", after which both positions are incremented by 1.
+If there is a match, "read" is incremented to the position immediately after the
+end of the pattern in sequence, and the replacement text is copied in at
+position "write".
+
+In order to ensure there is enough place to copy in replacement text in case of
+a match, a helper function called make_room is used. Also, after "text" is
+copied in at "write", a multiple of CHUNK_SIZE number of entries is removed
+between "read" and "write" (if possible) to ensure that the two positions are
+as close together as possible.
+
+As an optimization, when pattern and text are the same, the replace function
+does nothing. The edge cases where either text or sequence is empty are also
+handled.

@@ -1,0 +1,6 @@
+Please enter the operator(+/*): +
+Please enter polynomial A: (1,0,1),(0,0,1)
+Please enter polynomial B: (1,0,1),(0,0,-1)
+A+B: (1,0,2)
+Do you want to continue? (y/n): *
+
