@@ -10,7 +10,7 @@ typedef struct Node
 } Node;
 
 // The first term is considered to be x^i1*y^j1 and the second term is x^i2*y^j2
-// Returns 0 if two terms have same degree, 1 if term1 is greater and -1 if 
+// Returns 0 if two terms have same degree, 1 if term1 is greater and -1 if
 // term2 is greater
 int compare(int i1, int j1, int i2, int j2)
 {
@@ -116,7 +116,18 @@ Node *scan_p()
         int rc = scanf("(%d,%d,%f)", &i, &j, &a);
         if (rc == EOF || rc == 0)
             break;
-        insert(&head, &tail, tail, i, j, a);
+        if (a != 0)
+        {
+            if (head == NULL || compare(i, j, head->i, head->j) > 0)
+                insert(&head, &tail, NULL, i, j, a);
+            else
+            {
+                Node *p = head;
+                while (p->next && compare(i, j, p->next->i, p->next->j) < 0)
+                    p = p->next;
+                insert(&head, &tail, p, i, j, a);
+            }
+        }
         scanf(",");
     }
     while (1)
@@ -262,5 +273,6 @@ int main()
                 break;
         }
     }
+    
     return 0;
 }
