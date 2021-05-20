@@ -33,6 +33,7 @@ int courselist_len = 0;
 Student *students[MAX_STUDENTS] = {NULL};
 int studlist_len = 0;
 
+// Compares two strings 's1' and 's2'.
 // Return -1 if s1 is smaller, 1 if s2 is smaller and 0 if they are equal
 int strcmp(const char *s1, const char *s2)
 {
@@ -51,6 +52,20 @@ int strcmp(const char *s1, const char *s2)
     if (s2[i] != '\0')
         return -1;
     return 0;
+}
+
+// Copies the string pointed to by 'src', including the terminating null byte ('\0'),
+// to the buffer pointed to by 'dest'. At most 'n' bytes of 'src' are copied.
+// Warning: If there is no null byte among the first 'n' bytes of 'src', the string
+// placed in 'dest' will not be null-terminated.
+char *strncpy(char *dest, const char *src, size_t n)
+{
+    int i;
+    for (i = 0; i < n && src[i] != '\0'; i++)
+        dest[i] = src[i];
+    if (i < n)
+        dest[i] = '\0';
+    return dest;
 }
 
 void add_course(char *name, int code, int credits)
@@ -90,8 +105,10 @@ Student* find_student(char* name)
     return NULL;
 }
 
-CoursePerf* insert(CoursePerf** h, int course_code, int grade)
+//TODO: while adding a course to student, grade will always be 'U'. Hence do not take the grade as input, always just assign 'U' in this function
+CoursePerf* add_course_to_student(CoursePerf** h, int course_code, int grade)
 {
+    //TODO: first call find_course and if it returns NULL, return properly from this function
     int credits = find_course(course_code)->credits;
     CoursePerf *new_node = (CoursePerf *) malloc(sizeof(CoursePerf));
     new_node->course = find_course(course_code);
@@ -105,6 +122,11 @@ CoursePerf* insert(CoursePerf** h, int course_code, int grade)
     }
     while(p->next && p->next->course->credits > credits)
         p = p->next;
+    // TODO: you don't need 'temp' variable below. You can use the below snippet instead:
+    /*
+    new_node->next = p->next;
+    p->next = new_node;
+    */
     CoursePerf *temp = p->next;
     p->next = new_node;
     new_node->next = temp;
@@ -117,7 +139,7 @@ void add_student(char *name, int course_code)
     new_student->name = name; // TODO: do the same for here as suggested for the Course.name in the add_course function
     new_student->num_courses = 1;
     new_student->course_list = NULL;
-    insert(&(new_student->course_list), course_code, 11);
+    add_course_to_student(&(new_student->course_list), course_code, 11);
     students[studlist_len++] = new_student;
 }
 
@@ -206,7 +228,7 @@ void register_for_course(char *student_name, int course_num)
         printf("ERROR: Student has already registered for max courses!");
         return;
     }
-    insert(&(s->course_list), course_num, 11);
+    add_course_to_student(&(s->course_list), course_num, 11);
     s->num_courses++;
     printf("Registered %s for course %d\n", student_name, course_num);
 }
