@@ -374,21 +374,64 @@ void initialize_courses()
 {
     printf("ENTER THE COURSE LIST:\n");
     char line[1024] = {'S', 0}; // initializing to a non-empty string
-    while (strcmp(line, "") != 0)
+    int cid;
+    char title[1024];
+    int credits;
+    int courses_added = 0, invalid_courses = 0;
+
+    while (scanf("%[^\n]", &line) > 0)
     {
-        scanf("%[^\n]", &line);
         printf("Line: %s\n", line);
+
+        if(3 == sscanf(line, "%d, %[^,], %d", &cid, title, &credits))
+        {
+            printf("Adding Course '%s' with id %d and %d credits\n", title, cid, credits);
+            ++courses_added;
+        }
+        else
+        {
+            printf("*** INCORRECTLY FORMATTED COURSE STRING: '%s'\n", line);
+            ++invalid_courses;
+        }
         while (getchar() != '\n')
             ;
     }
+    printf("=== %d COURSES HAVE BEEN ADDED ===\n", courses_added);
+    if (invalid_courses > 0)
+        printf("*** ENCOUNTERED %d INCORRECTLY FORMED LINES ***\n\n", invalid_courses);
 }
 
-// Initialize Courses
+// Initialize Student Registrations
 // Reads one registration per line (format: <student name>, <course number>).
 // Empty line ends the query
 void initialize_student_regns()
 {
+    printf("ENTER THE STUDENTS LIST:\n");
+    char line[64] = {'S', 0}; // initializing to a non-empty string
+    int course;
+    char student[64];
+    int students_registered = 0, invalid_lines = 0;
 
+    while (scanf("%[^\n]", &line) > 0)
+    {
+        printf("Line: %s\n", line);
+
+        if(2 == sscanf(line, "%[^,], %d", student, &course))
+        {
+            printf("Registering '%s' for the course with id %d\n", student, course);
+            ++students_registered;
+        }
+        else
+        {
+            printf("*** INCORRECTLY FORMATTED COURSE STRING: '%s'\n", line);
+            ++invalid_lines;
+        }
+        while (getchar() != '\n')
+            ;
+    }
+    printf("=== %d STUDENTS HAVE BEEN REGISTERED SUCCESSFULLY ===\n", students_registered);
+    if (invalid_lines > 0)
+        printf("*** ENCOUNTERED %d INCORRECTLY FORMED LINES ***\n\n", invalid_lines);
 }
 
 void process_query(char *query)
