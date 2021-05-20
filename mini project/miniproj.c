@@ -85,13 +85,15 @@ void add_course(char *name, int code, int credits)
 
 void free_courses()
 {
-    for (int i = 0; i < courselist_len; i++)
+    int i;
+    for (i = 0; i < courselist_len; i++)
         free(courses_offered[i]);
 }
 
 Course* find_course(int code)
 {
-    for (int i = 0; i < courselist_len; i++)
+    int i;
+    for (i = 0; i < courselist_len; i++)
         if (courses_offered[i]->course_code == code)
             return courses_offered[i];
     return NULL;
@@ -99,7 +101,8 @@ Course* find_course(int code)
 
 Student* find_student(char* name)
 {
-    for(int i = 0; i < studlist_len; i++)
+    int i;
+    for(i = 0; i < studlist_len; i++)
         if (strcmp(name, students[i]->name) == 0)
             return students[i];
     return NULL;
@@ -155,7 +158,8 @@ const char* num_to_grade(int g)
 int grade_to_num(char *grade)
 {
     int result = -1;
-    for (int g = 0; g < sizeof(GRADES)/sizeof(const char*); ++g)
+    int g;
+    for (g = 0; g < sizeof(GRADES)/sizeof(const char*); ++g)
         if (strcmp(GRADES[g], grade) == 0)
             result = (g == 0) ? 0 : g + 4;
     return result;
@@ -187,7 +191,8 @@ int is_stud_in_course_int(char *student, int course_num)
 {
     Student *s = find_student(student);
     // TODO: what if 's' is NULL here. find_student can return a null. So check for that here
-    for (CoursePerf *p = s->course_list; p != NULL; p = p->next)
+    CoursePerf *p = NULL;
+    for (p = s->course_list; p != NULL; p = p->next)
     {
         if (p->course->course_code == course_num)
             return 1;
@@ -264,7 +269,8 @@ void students_n_courses(int num_courses)
 void print_students()
 {
     printf("Here is a list of all students:\n");
-    for (int i = 0; i < studlist_len; i++)
+    int i;
+    for (i = 0; i < studlist_len; i++)
         printf("%s\n", students[i]->name);
 }
 
@@ -272,7 +278,8 @@ void print_students()
 void print_courses()
 {
     printf("Here is a list of all courses:\n");
-    for (int i = 0; i < courselist_len; i++)
+    int i;
+    for (i = 0; i < courselist_len; i++)
         printf("%d, %s, %d\n", courses_offered[i]->course_code, courses_offered[i]->course_name, courses_offered[i]->credits);
 }
 
@@ -316,8 +323,9 @@ void n_cred_courses(int number)
 void credits_student(char *student)
 {
     Student *s = find_student(student);
+    CoursePerf *p = NULL;
     int credits = 0;
-    for (CoursePerf *p = s->course_list; p != NULL; p = p->next)
+    for (p = s->course_list; p != NULL; p = p->next)
         credits += p->course->credits;
     printf("Here's the total number of credits %s has taken:\n", student);
 }
@@ -463,6 +471,7 @@ void process_query(char *query)
     float gpa;
     char grade[4];
     char student_name[128];
+    
     if (1 == sscanf(query, "GET ALL STUDENTS REGISTERED FOR THE COURSE %d", &course_num1))
         students_for_course(course_num1);
     else if(1 == sscanf(query, "GET ALL COURSES WHICH HAVE MORE THAN %d STUDENTS", &number))
