@@ -5,14 +5,30 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Python: Flask",
+            "type": "python",
+            "request": "launch",
+            "module": "flask",
+            "env": {
+                "FLASK_APP": "app.py",
+                "FLASK_ENV": "development"
+            },
+            "args": [
+                "run",
+                "--no-debugger"
+            ],
+            "jinja": true
+        },
+        {
             "name": "gcc.exe - Build and debug active file",
             "type": "cppdbg",
             "request": "launch",
             "program": "${fileDirname}\\${fileBasenameNoExtension}.exe",
-            "args": ["<", "${fileDirname}\\input6.txt", ">", "${fileDirname}\\output6.txt"],
+            //"args": ["<", "${fileDirname}\\input6.txt", ">", "${fileDirname}\\output6.txt"],
             //"args": ["<", "${fileDirname}\\test.txt"],
-            //"args": [],
+            "args": [],
             "stopAtEntry": false,
+            //"cwd": "${workspaceFolder}\\16836_shreepranav",
             "cwd": "${workspaceFolder}",
             "environment": [],
             "externalConsole": false,

@@ -1,0 +1,12 @@
+{
+    "python.pythonPath": "c:\\Users\\shree\\SEM-4\\DSA\\DSA-assignment-1\\.venv\\Scripts\\python.exe",
+    "python.testing.pytestArgs": [
+        "."
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.nosetestsEnabled": false,
+    "python.testing.pytestEnabled": true,
+    "files.associations": {
+        "cstdio": "c"
+    }
+}
