@@ -62,7 +62,7 @@ void add_course(char *name, int code, int credits)
     }
     // allocate memory for the new Course node
     Course *new_course = (Course *) malloc(sizeof(Course));
-    new_course->course_name = name;
+    new_course->course_name = name;  //TODO: the course_name in the struct either needs to be an array and copy 'name' into that OR memory should be allocated here for 'name', copy that 'name' into newly create memory and save pointer to this newly created memory in the struct as char* 
     new_course->course_code = code;
     new_course->credits = credits;
     courses_offered[courselist_len++] = new_course;
@@ -81,8 +81,6 @@ Course* find_course(int code)
             return courses_offered[i];
     return NULL;
 }
-
-
 
 Student* find_student(char* name)
 {
@@ -116,7 +114,7 @@ CoursePerf* insert(CoursePerf** h, int course_code, int grade)
 void add_student(char *name, int course_code)
 {
     Student *new_student = (Student *) malloc(sizeof(Student));
-    new_student->name = name;
+    new_student->name = name; // TODO: do the same for here as suggested for the Course.name in the add_course function
     new_student->num_courses = 1;
     new_student->course_list = NULL;
     insert(&(new_student->course_list), course_code, 11);
@@ -166,6 +164,7 @@ int grade_to_num2(char *grade)
 int is_stud_in_course_int(char *student, int course_num)
 {
     Student *s = find_student(student);
+    // TODO: what if 's' is NULL here. find_student can return a null. So check for that here
     for (CoursePerf *p = s->course_list; p != NULL; p = p->next)
     {
         if (p->course->course_code == course_num)
@@ -489,7 +488,7 @@ void process_query(char *query)
     else if(0 == strcmp(query, "INITIALIZE STUDENT REGISTRATIONS"))
         initialize_student_regns();
     else
-        printf("***BAD QUERY: %s\n", query);
+        printf("*** BAD QUERY: '%s' ***\n", query);
     return;
 }
 
@@ -497,13 +496,12 @@ int main()
 {
     char response = 'y';
     char query[1024];
-    /*
     add_course("Real Analysis", 204, 4);
     add_course("Introductory Course", 101, 4);
     add_course("Algebraic Combinatorics", 319, 3);
     add_student("Pranav", 204);
     add_student("Yagami", 319);
-    */
+
     while (response == 'y')
     {
         printf("ENTER YOUR QUERY:\n");
