@@ -58,13 +58,14 @@ int strcmp(const char *s1, const char *s2)
 // to the buffer pointed to by 'dest'. At most 'n' bytes of 'src' are copied.
 // Warning: If there is no null byte among the first 'n' bytes of 'src', the string
 // placed in 'dest' will not be null-terminated.
-char *strncpy(char *dest, const char *src, size_t n)
+char *strcopy(const char *src)
 {
     int i;
-    for (i = 0; i < n && src[i] != '\0'; i++)
+    for (i = 0; src[i] != '\0'; i++)
+        ;
+    char *dest = (char *) malloc(i * sizeof(char));
+    for (; i > -1; i--)
         dest[i] = src[i];
-    if (i < n)
-        dest[i] = '\0';
     return dest;
 }
 
@@ -77,7 +78,7 @@ void add_course(char *name, int code, int credits)
     }
     // allocate memory for the new Course node
     Course *new_course = (Course *) malloc(sizeof(Course));
-    new_course->course_name = name;  //TODO: the course_name in the struct either needs to be an array and copy 'name' into that OR memory should be allocated here for 'name', copy that 'name' into newly create memory and save pointer to this newly created memory in the struct as char* 
+    new_course->course_name = strcopy(name);  //TODO: the course_name in the struct either needs to be an array and copy 'name' into that OR memory should be allocated here for 'name', copy that 'name' into newly create memory and save pointer to this newly created memory in the struct as char* 
     new_course->course_code = code;
     new_course->credits = credits;
     courses_offered[courselist_len++] = new_course;
