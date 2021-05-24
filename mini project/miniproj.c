@@ -696,9 +696,9 @@ void initialize_courses()
 void initialize_student_regns()
 {
     printf("ENTER THE STUDENTS LIST:\n");
-    char line[64] = {'S', 0}; // initializing to a non-empty string
+    char line[128] = {'S', 0}; // initializing to a non-empty string
     int course;
-    char student[64];
+    char student[128];
     int students_registered = 0, invalid_lines = 0;
 
     while (scanf("%[^\n]", &line) > 0)
