@@ -55,15 +55,73 @@ int strcmp(const char *s1, const char *s2)
     return 0;
 }
 
-// Copies the string in src into a new string called dest and returns it
+// return length of the '\0' terminated string 's'
+int stringlen(const char* s)
+{
+    int i = 0;
+    while (s[i] != '\0')
+        ++i;
+    return i;
+}
+
+// copy string 'src' into 'dest' upto and including '\0'.
+// assumes that dest has enough memory already allocated
+void stringcopy(char* dest, const char* src)
+{
+    while(*(dest++) = *(src++))
+        ;
+}
+
+// Copies the string in src into a newly malloc'ed string and returns it
 char *strcopy(const char *src)
 {
-    int i;
-    for (i = 0; src[i] != '\0'; i++)
-        ;
-    char *dest = (char *)malloc(i + 1);
-    for (; i > -1; i--)
-        dest[i] = src[i];
+    char *dest = (char *) malloc(stringlen(src) + 1);
+    stringcopy(dest, src);
+    return dest;
+}
+
+// Concatenates 2 strings (with a space in between) into a mallaoc'ed memory and returns it
+char *strconcat2(const char *s1, const char *s2)
+{
+    int l1 = stringlen(s1);
+    int l2 = stringlen(s2);
+    char *dest = (char *) malloc(l1 + l2 + 2); // 1 for space and 1 for '\0'
+    stringcopy(dest, s1);
+    dest[l1] = ' ';
+    stringcopy(dest + l1 + 1, s2);
+    return dest;
+}
+
+// Concatenates 3 strings (with spaces in between) into a mallaoc'ed memory and returns it
+char *strconcat3(const char *s1, const char *s2, const char *s3)
+{
+    int l1 = stringlen(s1);
+    int l2 = stringlen(s2);
+    int l3 = stringlen(s3);
+    char *dest = (char *) malloc(l1 + l2 + l3 + 3); // 2 for spaces and 1 for '\0'
+    stringcopy(dest, s1);
+    dest[l1] = ' ';
+    stringcopy(dest + l1 + 1, s2);
+    dest[l1 + l2 + 1] = ' ';
+    stringcopy(dest + l1 + l2 + 2, s3);
+    return dest;
+}
+
+// Concatenates 4 strings (with spaces in between) into a mallaoc'ed memory and returns it
+char *strconcat4(const char *s1, const char *s2, const char *s3, const char *s4)
+{
+    int l1 = stringlen(s1);
+    int l2 = stringlen(s2);
+    int l3 = stringlen(s3);
+    int l4 = stringlen(s4);
+    char *dest = (char *) malloc(l1 + l2 + l3 + l4 + 4); // 3 for spaces and 1 for '\0'
+    stringcopy(dest, s1);
+    dest[l1] = ' ';
+    stringcopy(dest + l1 + 1, s2);
+    dest[l1 + l2 + 1] = ' ';
+    stringcopy(dest + l1 + l2 + 2, s3);
+    dest[l1 + l2 + l3 + 2] = ' ';
+    stringcopy(dest + l1 + l2 + l3 + 3, s4);
     return dest;
 }
 
@@ -774,6 +832,12 @@ int main()
     //add_course("Algebraic Combinatorics", 319, 3);
     //add_student("Pranav", 319);
     //add_student("Yagami", 204);
+
+    //stringcopy(query, "This is a long string");
+    //printf("%s\n", strcopy("This is a long string....."));
+    //printf("%s\n", strconcat2("Shreekar", "Varma"));
+    //printf("%s\n", strconcat3("E.", "Shreepranav", "Varma"));
+    //printf("%s\n", strconcat4("Ding", "Dong.", "Ping", "Pong"));
 
     while (response == 'y')
     {
