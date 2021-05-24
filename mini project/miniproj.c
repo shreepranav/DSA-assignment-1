@@ -731,40 +731,43 @@ void process_query(char *query)
     int number;
     float gpa;
     char grade[4];
-    char student_name[128];
+    char stud1[32] = {0}, stud2[32] = {0}, stud3[32] = {0}, stud4[32] = {0};
 
     if (1 == sscanf(query, "GET ALL STUDENTS REGISTERED FOR THE COURSE %d", &course_num1))
         students_for_course(course_num1);
     else if (1 == sscanf(query, "GET ALL COURSES WHICH HAVE MORE THAN %d STUDENTS", &number))
         courses_n_students(number);
-    else if (1 == sscanf(query, "GET ALL COURSES %s HAS REGISTERED FOR", student_name))
-        courses_for_student(student_name);
+    else if (1 == sscanf(query, "GET ALL COURSES %s HAS REGISTERED FOR", stud1) ||
+             2 == sscanf(query, "GET ALL COURSES %s %s HAS REGISTERED FOR", stud1, stud2) ||
+             3 == sscanf(query, "GET ALL COURSES %s %s %s HAS REGISTERED FOR", stud1, stud2, stud3) ||
+             4 == sscanf(query, "GET ALL COURSES %s %s %s %s HAS REGISTERED FOR", stud1, stud2, stud3, stud4))
+        courses_for_student(strconcat4(stud1, stud2, stud3, stud4));
     else if (2 == sscanf(query, "GET ALL STUDENTS REGISTERED FOR BOTH THE COURSES %d AND %d", &course_num1, &course_num2))
         students_for_both_courses(course_num1, course_num2);
     else if (1 == sscanf(query, "GET NUMBER OF STUDENTS REGISTERED FOR %d", &course_num1))
         num_stud_for_course(course_num1);
-    else if (2 == sscanf(query, "REGISTER STUDENT %s FOR THE COURSE %d", &student_name, &course_num1))
-        register_for_course(student_name, course_num1);
-    else if (2 == sscanf(query, "UNREGISTER STUDENT %s FOR THE COURSE %d", &student_name, &course_num1))
-        unregister_for_course(student_name, course_num1);
-    else if (2 == sscanf(query, "HAS STUDENT %s REGISTERED FOR THE COURSE %d ?", &student_name, &course_num1))
-        is_stud_in_course(student_name, course_num1);
+    else if (2 == sscanf(query, "REGISTER STUDENT %s FOR THE COURSE %d", &stud1, &course_num1))
+        register_for_course(stud1, course_num1);
+    else if (2 == sscanf(query, "UNREGISTER STUDENT %s FOR THE COURSE %d", &stud1, &course_num1))
+        unregister_for_course(stud1, course_num1);
+    else if (2 == sscanf(query, "HAS STUDENT %s REGISTERED FOR THE COURSE %d ?", &stud1, &course_num1))
+        is_stud_in_course(stud1, course_num1);
     else if (1 == sscanf(query, "GET ALL STUDENTS WHO HAVE REGISTERED FOR MORE THAN %d COURSES", &number))
         students_n_courses(number);
     else if (0 == strcmp(query, "GET A LIST OF ALL STUDENTS"))
         print_students();
     else if (0 == strcmp(query, "GET A LIST OF ALL COURSES"))
         print_courses();
-    else if (2 == sscanf(query, "GET ALL %d CREDIT COURSES %s HAS REGISTERED FOR", &number, student_name))
-        n_cred_courses_for_stud(number, student_name);
+    else if (2 == sscanf(query, "GET ALL %d CREDIT COURSES %s HAS REGISTERED FOR", &number, stud1))
+        n_cred_courses_for_stud(number, stud1);
     else if (1 == sscanf(query, "GET ALL %d CREDIT COURSES", &number))
         n_cred_courses(number);
-    else if (1 == sscanf(query, "GET THE TOTAL NUMBER OF CREDITS %s REGISTERED FOR", student_name))
-        credits_student(student_name);
+    else if (1 == sscanf(query, "GET THE TOTAL NUMBER OF CREDITS %s REGISTERED FOR", stud1))
+        credits_student(stud1);
     else if (1 == sscanf(query, "GET ALL STUDENTS WHO REGISTERED FOR AT LEAST %d CREDITS", &number))
         at_least_n_creds(number);
-    else if (1 == sscanf(query, "GET A LIST OF GRADES AND THE GPA OF STUDENT %s", student_name))
-        student_grades(student_name);
+    else if (1 == sscanf(query, "GET A LIST OF GRADES AND THE GPA OF STUDENT %s", stud1))
+        student_grades(stud1);
     else if (1 == sscanf(query, "GET A LIST OF ALL STUDENTS WHO HAS A GPA BELOW %f", &gpa))
         students_below_gpa(gpa);
     else if (1 == sscanf(query, "GET A LIST OF ALL STUDENTS WHO HAS A GPA ABOVE %f", &gpa))
@@ -773,8 +776,8 @@ void process_query(char *query)
         students_above_grade(grade, course_num1);
     else if (2 == sscanf(query, "GET A LIST OF ALL STUDENTS WHOSE GRADE IS BELOW %s IN %d", grade, &course_num1))
         students_below_grade(grade, course_num1);
-    else if (3 == sscanf(query, "ASSIGN GRADE %s TO STUDENT %s FOR THE COURSE %d", grade, student_name, &course_num1))
-        assign_grade(grade, student_name, course_num1);
+    else if (3 == sscanf(query, "ASSIGN GRADE %s TO STUDENT %s FOR THE COURSE %d", grade, stud1, &course_num1))
+        assign_grade(grade, stud1, course_num1);
     else if (0 == strcmp(query, "INITIALIZE COURSES"))
         initialize_courses();
     else if (0 == strcmp(query, "INITIALIZE STUDENT REGISTRATIONS"))
