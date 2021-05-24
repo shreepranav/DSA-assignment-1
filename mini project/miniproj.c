@@ -55,24 +55,25 @@ int strcmp(const char *s1, const char *s2)
     return 0;
 }
 
-// return length of the '\0' terminated string 's'
+// Returns length of the '\0' terminated string 's'
 int stringlen(const char* s)
 {
     int i = 0;
-    while (s[i] != '\0')
-        ++i;
+    if (s != NULL)
+        while (s[i] != '\0')
+            ++i;
     return i;
 }
 
-// copy string 'src' into 'dest' upto and including '\0'.
-// assumes that dest has enough memory already allocated
+// Copies string 'src' into 'dest' upto and including '\0'.
+// Assumes that 'dest' has enough memory already allocated.
 void stringcopy(char* dest, const char* src)
 {
     while(*(dest++) = *(src++))
         ;
 }
 
-// Copies the string in src into a newly malloc'ed string and returns it
+// Copies the string in src into a newly malloc'ed string and returns it.
 char *strcopy(const char *src)
 {
     char *dest = (char *) malloc(stringlen(src) + 1);
@@ -80,48 +81,32 @@ char *strcopy(const char *src)
     return dest;
 }
 
-// Concatenates 2 strings (with a space in between) into a mallaoc'ed memory and returns it
-char *strconcat2(const char *s1, const char *s2)
-{
-    int l1 = stringlen(s1);
-    int l2 = stringlen(s2);
-    char *dest = (char *) malloc(l1 + l2 + 2); // 1 for space and 1 for '\0'
-    stringcopy(dest, s1);
-    dest[l1] = ' ';
-    stringcopy(dest + l1 + 1, s2);
-    return dest;
-}
-
-// Concatenates 3 strings (with spaces in between) into a mallaoc'ed memory and returns it
-char *strconcat3(const char *s1, const char *s2, const char *s3)
-{
-    int l1 = stringlen(s1);
-    int l2 = stringlen(s2);
-    int l3 = stringlen(s3);
-    char *dest = (char *) malloc(l1 + l2 + l3 + 3); // 2 for spaces and 1 for '\0'
-    stringcopy(dest, s1);
-    dest[l1] = ' ';
-    stringcopy(dest + l1 + 1, s2);
-    dest[l1 + l2 + 1] = ' ';
-    stringcopy(dest + l1 + l2 + 2, s3);
-    return dest;
-}
-
-// Concatenates 4 strings (with spaces in between) into a mallaoc'ed memory and returns it
+// Concatenates 4 strings into a mallaoc'ed memory and returns it.
+// If any of the strings s2, s3 or s4 is empty or NULL, then that string and all
+// subsequent strings are not copied to the output string
 char *strconcat4(const char *s1, const char *s2, const char *s3, const char *s4)
 {
     int l1 = stringlen(s1);
     int l2 = stringlen(s2);
     int l3 = stringlen(s3);
     int l4 = stringlen(s4);
-    char *dest = (char *) malloc(l1 + l2 + l3 + l4 + 4); // 3 for spaces and 1 for '\0'
+    l2 = l2 ? l2 + 1 : 0; // include additional length for space
+    l3 = l3 ? l3 + 1 : 0; // include additional length for space
+    l4 = l4 ? l4 + 1 : 0; // include additional length for space
+    char *dest = (char *) malloc(l1 + l2 + l3 + l4 + 1);
     stringcopy(dest, s1);
+    if (l2 == 0)
+        return dest;
     dest[l1] = ' ';
     stringcopy(dest + l1 + 1, s2);
-    dest[l1 + l2 + 1] = ' ';
-    stringcopy(dest + l1 + l2 + 2, s3);
-    dest[l1 + l2 + l3 + 2] = ' ';
-    stringcopy(dest + l1 + l2 + l3 + 3, s4);
+    if (l3 == 0)
+        return dest;
+    dest[l1 + l2] = ' ';
+    stringcopy(dest + l1 + l2 + 1, s3);
+    if (l4 == 0)
+        return dest;
+    dest[l1 + l2 + l3] = ' ';
+    stringcopy(dest + l1 + l2 + l3 + 1, s4);
     return dest;
 }
 
@@ -178,7 +163,6 @@ Student *find_student(char *name)
     return NULL;
 }
 
-//TODO: while adding a course to student, grade will always be 'U'. Hence do not take the grade as input, always just assign 'U' in this function
 CoursePerf *add_course_to_student(CoursePerf **h, int course_code)
 {
     Course* course_to_add = find_course(course_code);
@@ -265,7 +249,7 @@ const char *GRADES[] = {"F", "D", "C", "B", "B+", "A", "A+", "U"};
 
 const char *num_to_grade(int g)
 {
-    if (g < 0 || g > sizeof(GRADES) / sizeof(const char *) + 3 || g > 0 && g < 5)
+    if (g < 5 && g != 0 || g > sizeof(GRADES) / sizeof(const char *) + 3)
         return "INVLAID_GRADE";
     return GRADES[g == 0 ? 0 : g - 4];
 }
@@ -277,28 +261,6 @@ int grade_to_num(char *grade)
         if (strcmp(GRADES[g], grade) == 0)
             result = (g == 0) ? 0 : g + 4;
     return result;
-}
-
-int grade_to_num2(char *grade)
-{
-    if (strcmp(grade, "A+") == 0)
-        return 10;
-    else if (strcmp(grade, "A") == 0)
-        return 9;
-    else if (strcmp(grade, "B+") == 0)
-        return 8;
-    else if (strcmp(grade, "B") == 0)
-        return 7;
-    else if (strcmp(grade, "C") == 0)
-        return 6;
-    else if (strcmp(grade, "D") == 0)
-        return 5;
-    else if (strcmp(grade, "F") == 0)
-        return 0;
-    else if (strcmp(grade, "U") == 0)
-        return -1;
-    else
-        return -2;
 }
 
 CoursePerf* student_courseperf(Student *s, Course* c)
@@ -336,6 +298,8 @@ float gpa(Student *s)
 
 void print_course(Course *course)
 {
+    if (course == NULL)
+        return;
     printf("%d, %s, %d\n", course->course_code, course->course_name, course->credits);
 }
 
@@ -343,7 +307,6 @@ void print_course(Course *course)
 void students_for_course(int course_number)
 {
     printf("Here's all the students for course %d:\n", course_number);
-    //TODO: if find_course returns NULL here, then print appropriate error
     Course* c = find_course(course_number);
     if (c == NULL)
     {
@@ -374,7 +337,6 @@ void courses_for_student(char *student_name)
 void students_for_both_courses(int course_num1, int course_num2)
 {
     printf("Here's all the students that registered for both %d and %d:\n", course_num1, course_num2);
-    //TODO: if either of the find_course calls return NULL, print appropriate error
     Course* c1 = find_course(course_num1);
     Course* c2 = find_course(course_num2);
     if (c1 == NULL || c2 == NULL)
@@ -392,7 +354,6 @@ void students_for_both_courses(int course_num1, int course_num2)
 void num_stud_for_course(int course_num)
 {
     printf("Here's number of students in course %d:\n", course_num);
-    //TODO: if find_course returns NULL here, then print appropriate error
     Course* c = find_course(course_num);
     if (c == NULL)
     {
@@ -406,6 +367,7 @@ void num_stud_for_course(int course_num)
 // Query 5: REGISTER STUDENT <student name> FOR THE COURSE <course number>
 void register_for_course(char *student_name, int course_num)
 {
+    printf("Registering %s for course %d\n", student_name, course_num);
     /*
     Student *s = find_student(student_name);
     if (s == NULL)
@@ -421,7 +383,6 @@ void register_for_course(char *student_name, int course_num)
     }
     */
     add_student(student_name, course_num);
-    printf("Registered %s for course %d\n", student_name, course_num);
 }
 
 // Query 6: UNREGISTER STUDENT <student name> FOR THE COURSE <course number>
@@ -833,11 +794,13 @@ int main()
     //add_student("Pranav", 319);
     //add_student("Yagami", 204);
 
-    //stringcopy(query, "This is a long string");
-    //printf("%s\n", strcopy("This is a long string....."));
-    //printf("%s\n", strconcat2("Shreekar", "Varma"));
-    //printf("%s\n", strconcat3("E.", "Shreepranav", "Varma"));
-    //printf("%s\n", strconcat4("Ding", "Dong.", "Ping", "Pong"));
+    /*
+    stringcopy(query, "This is a long string");
+    printf("%s\n", strconcat4("This is a long string.....", "", "", ""));
+    printf("%s\n", strconcat4("Shreekar", "Varma", NULL, ""));
+    printf("%s\n", strconcat4("E.", "Shreepranav", "Varma", NULL));
+    printf("%s\n", strconcat4("Ding", "Dong.", "Ping", "Pong"));
+    */
 
     while (response == 'y')
     {
