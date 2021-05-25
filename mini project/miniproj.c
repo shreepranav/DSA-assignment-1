@@ -81,33 +81,30 @@ char *strcopy(const char *src)
     return dest;
 }
 
-// Concatenates 4 strings into a mallaoc'ed memory and returns it.
+// Appends s2, s3 and s4 (separated by ' ') to s1 and returns s1 back.
+// Assumes that s1 has enough memory to hold all the strings.
 // If any of the strings s2, s3 or s4 is empty or NULL, then that string and all
-// subsequent strings are not copied to the output string
-char *strconcat4(const char *s1, const char *s2, const char *s3, const char *s4)
+// subsequent strings are not appended to s1
+char *append_strings(char *s1, const char *s2, const char *s3, const char *s4)
 {
     int l1 = stringlen(s1);
     int l2 = stringlen(s2);
     int l3 = stringlen(s3);
     int l4 = stringlen(s4);
-    l2 = l2 ? l2 + 1 : 0; // include additional length for space
-    l3 = l3 ? l3 + 1 : 0; // include additional length for space
-    l4 = l4 ? l4 + 1 : 0; // include additional length for space
-    char *dest = (char *) malloc(l1 + l2 + l3 + l4 + 1);
-    stringcopy(dest, s1);
+
     if (l2 == 0)
-        return dest;
-    dest[l1] = ' ';
-    stringcopy(dest + l1 + 1, s2);
+        return s1;
+    s1[l1] = ' ';
+    stringcopy(s1 + l1 + 1, s2);
     if (l3 == 0)
-        return dest;
-    dest[l1 + l2] = ' ';
-    stringcopy(dest + l1 + l2 + 1, s3);
+        return s1;
+    s1[l1 + l2 + 1] = ' ';
+    stringcopy(s1 + l1 + l2 + 2, s3);
     if (l4 == 0)
-        return dest;
-    dest[l1 + l2 + l3] = ' ';
-    stringcopy(dest + l1 + l2 + l3 + 1, s4);
-    return dest;
+        return s1;
+    s1[l1 + l2 + l3 + 2] = ' ';
+    stringcopy(s1 + l1 + l2 + l3 + 3, s4);
+    return s1;
 }
 
 void add_course(char *name, int code, int credits)
@@ -731,43 +728,44 @@ void process_query(char *query)
     int number;
     float gpa;
     char grade[4];
-    char stud1[32] = {0}, stud2[32] = {0}, stud3[32] = {0}, stud4[32] = {0};
+    char student[128] = {0}, s2[32] = {0}, s3[32] = {0}, s4[32] = {0};
+    char lw[32] = {0}; // last word of the query
 
     if (1 == sscanf(query, "GET ALL STUDENTS REGISTERED FOR THE COURSE %d", &course_num1))
         students_for_course(course_num1);
-    else if (1 == sscanf(query, "GET ALL COURSES WHICH HAVE MORE THAN %d STUDENTS", &number))
+    else if (2 == sscanf(query, "GET ALL COURSES WHICH HAVE MORE THAN %d %s", &number, lw) && strcmp("STUDENTS", lw) == 0)
         courses_n_students(number);
-    else if (1 == sscanf(query, "GET ALL COURSES %s HAS REGISTERED FOR", stud1) ||
-             2 == sscanf(query, "GET ALL COURSES %s %s HAS REGISTERED FOR", stud1, stud2) ||
-             3 == sscanf(query, "GET ALL COURSES %s %s %s HAS REGISTERED FOR", stud1, stud2, stud3) ||
-             4 == sscanf(query, "GET ALL COURSES %s %s %s %s HAS REGISTERED FOR", stud1, stud2, stud3, stud4))
-        courses_for_student(strconcat4(stud1, stud2, stud3, stud4));
+    else if (2 == sscanf(query, "GET ALL COURSES %s HAS REGISTERED %s", student, lw) && strcmp("FOR", lw) == 0 ||
+             3 == sscanf(query, "GET ALL COURSES %s %s HAS REGISTERED %s", student, s2, lw) && strcmp("FOR", lw) == 0 ||
+             4 == sscanf(query, "GET ALL COURSES %s %s %s HAS REGISTERED %s", student, s2, s3, lw) && strcmp("FOR", lw) == 0 ||
+             5 == sscanf(query, "GET ALL COURSES %s %s %s %s HAS REGISTERED %s", student, s2, s3, s4, lw) && strcmp("FOR", lw) == 0)
+        courses_for_student(append_strings(student, s2, s3, s4));
     else if (2 == sscanf(query, "GET ALL STUDENTS REGISTERED FOR BOTH THE COURSES %d AND %d", &course_num1, &course_num2))
         students_for_both_courses(course_num1, course_num2);
     else if (1 == sscanf(query, "GET NUMBER OF STUDENTS REGISTERED FOR %d", &course_num1))
         num_stud_for_course(course_num1);
-    else if (2 == sscanf(query, "REGISTER STUDENT %s FOR THE COURSE %d", &stud1, &course_num1))
-        register_for_course(stud1, course_num1);
-    else if (2 == sscanf(query, "UNREGISTER STUDENT %s FOR THE COURSE %d", &stud1, &course_num1))
-        unregister_for_course(stud1, course_num1);
-    else if (2 == sscanf(query, "HAS STUDENT %s REGISTERED FOR THE COURSE %d ?", &stud1, &course_num1))
-        is_stud_in_course(stud1, course_num1);
+    else if (2 == sscanf(query, "REGISTER STUDENT %s FOR THE COURSE %d", &student, &course_num1))
+        register_for_course(student, course_num1);
+    else if (2 == sscanf(query, "UNREGISTER STUDENT %s FOR THE COURSE %d", &student, &course_num1))
+        unregister_for_course(student, course_num1);
+    else if (2 == sscanf(query, "HAS STUDENT %s REGISTERED FOR THE COURSE %d ?", &student, &course_num1))
+        is_stud_in_course(student, course_num1);
     else if (1 == sscanf(query, "GET ALL STUDENTS WHO HAVE REGISTERED FOR MORE THAN %d COURSES", &number))
         students_n_courses(number);
     else if (0 == strcmp(query, "GET A LIST OF ALL STUDENTS"))
         print_students();
     else if (0 == strcmp(query, "GET A LIST OF ALL COURSES"))
         print_courses();
-    else if (2 == sscanf(query, "GET ALL %d CREDIT COURSES %s HAS REGISTERED FOR", &number, stud1))
-        n_cred_courses_for_stud(number, stud1);
+    else if (2 == sscanf(query, "GET ALL %d CREDIT COURSES %s HAS REGISTERED FOR", &number, student))
+        n_cred_courses_for_stud(number, student);
     else if (1 == sscanf(query, "GET ALL %d CREDIT COURSES", &number))
         n_cred_courses(number);
-    else if (1 == sscanf(query, "GET THE TOTAL NUMBER OF CREDITS %s REGISTERED FOR", stud1))
-        credits_student(stud1);
+    else if (1 == sscanf(query, "GET THE TOTAL NUMBER OF CREDITS %s REGISTERED FOR", student))
+        credits_student(student);
     else if (1 == sscanf(query, "GET ALL STUDENTS WHO REGISTERED FOR AT LEAST %d CREDITS", &number))
         at_least_n_creds(number);
-    else if (1 == sscanf(query, "GET A LIST OF GRADES AND THE GPA OF STUDENT %s", stud1))
-        student_grades(stud1);
+    else if (1 == sscanf(query, "GET A LIST OF GRADES AND THE GPA OF STUDENT %s", student))
+        student_grades(student);
     else if (1 == sscanf(query, "GET A LIST OF ALL STUDENTS WHO HAS A GPA BELOW %f", &gpa))
         students_below_gpa(gpa);
     else if (1 == sscanf(query, "GET A LIST OF ALL STUDENTS WHO HAS A GPA ABOVE %f", &gpa))
@@ -776,8 +774,8 @@ void process_query(char *query)
         students_above_grade(grade, course_num1);
     else if (2 == sscanf(query, "GET A LIST OF ALL STUDENTS WHOSE GRADE IS BELOW %s IN %d", grade, &course_num1))
         students_below_grade(grade, course_num1);
-    else if (3 == sscanf(query, "ASSIGN GRADE %s TO STUDENT %s FOR THE COURSE %d", grade, stud1, &course_num1))
-        assign_grade(grade, stud1, course_num1);
+    else if (3 == sscanf(query, "ASSIGN GRADE %s TO STUDENT %s FOR THE COURSE %d", grade, student, &course_num1))
+        assign_grade(grade, student, course_num1);
     else if (0 == strcmp(query, "INITIALIZE COURSES"))
         initialize_courses();
     else if (0 == strcmp(query, "INITIALIZE STUDENT REGISTRATIONS"))
@@ -799,10 +797,14 @@ int main()
 
     /*
     stringcopy(query, "This is a long string");
-    printf("%s\n", strconcat4("This is a long string.....", "", "", ""));
-    printf("%s\n", strconcat4("Shreekar", "Varma", NULL, ""));
-    printf("%s\n", strconcat4("E.", "Shreepranav", "Varma", NULL));
-    printf("%s\n", strconcat4("Ding", "Dong.", "Ping", "Pong"));
+    char s1[128] = "This is a long string.....";
+    printf("%s\n", append_strings(s1, "", "", ""));
+    char s2[128] = "Shreekar";
+    printf("%s\n", append_strings(s2, "Varma", NULL, ""));
+    char s3[128] = "E.";
+    printf("%s\n", append_strings(s3, "Shreepranav", "Varma", NULL));
+    char s4[128] = "Ding";
+    printf("%s\n", append_strings(s4, "Dong.", "Ping", "Pong"));
     */
 
     while (response == 'y')
