@@ -73,7 +73,7 @@ void stringcopy(char* dest, const char* src)
         ;
 }
 
-// Copies the string in src into a newly malloc'ed string and returns it.
+// Copies the string in src into a newly heap allocated string and returns it.
 char *strcopy(const char *src)
 {
     char *dest = (char *) malloc(stringlen(src) + 1);
@@ -165,7 +165,7 @@ CoursePerf *add_course_to_student(CoursePerf **h, int course_code)
     Course* course_to_add = find_course(course_code);
     if (course_to_add == NULL)
     {
-        printf("ERROR: Course doesn't exist.");
+        printf("ERROR: Course does not exist!\n");
         return NULL;
     }
     int credits = course_to_add->credits;
@@ -235,7 +235,12 @@ void free_students()
 {
     for (int i = 0; i < studlist_len; i++)
     {
-        //TODO: you have to free the CoursePerf objects in the course_list
+        CoursePerf *temp = NULL;
+        for (CoursePerf *p = students[i]->course_list; p; p = temp)
+        {
+            temp = p->next;
+            free(p);
+        }
         free(students[i]->name);
         free(students[i]);
     }
@@ -251,6 +256,8 @@ const char *num_to_grade(int g)
     return GRADES[g == 0 ? 0 : g - 4];
 }
 
+// Returns the grade point value for the string grade.
+// U corresponds to 11, and an invalid grade corresponds to -1
 int grade_to_num(char *grade)
 {
     int result = -1;
@@ -307,7 +314,7 @@ void students_for_course(int course_number)
     Course* c = find_course(course_number);
     if (c == NULL)
     {
-        printf("ERROR: Course doesn't exist.");
+        printf("ERROR: Course %d does not exist!\n", course_number);
         return;
     }
 
@@ -323,7 +330,7 @@ void courses_for_student(char *student_name)
     Student *s = find_student(student_name);
     if (s == NULL)
     {
-        printf("ERROR: Student %s doesn't exist!", student_name);
+        printf("ERROR: Student %s does not exist!\n", student_name);
         return;
     }
     for (CoursePerf *p = s->course_list; p; p = p->next)
@@ -338,7 +345,7 @@ void students_for_both_courses(int course_num1, int course_num2)
     Course* c2 = find_course(course_num2);
     if (c1 == NULL || c2 == NULL)
     {
-        printf("ERROR: Course doesn't exist.");
+        printf("ERROR: Course %d does not exist!\n", (c1 == NULL) ? course_num1 : course_num2);
         return;
     }
 
@@ -354,7 +361,7 @@ void num_stud_for_course(int course_num)
     Course* c = find_course(course_num);
     if (c == NULL)
     {
-        printf("ERROR: Course doesn't exist.");
+        printf("ERROR: Course %d does not exist!\n", course_num);
         return;
     }
 
@@ -364,6 +371,11 @@ void num_stud_for_course(int course_num)
 // Query 5: REGISTER STUDENT <student name> FOR THE COURSE <course number>
 void register_for_course(char *student_name, int course_num)
 {
+    if (find_course(course_num) == NULL)
+    {
+        printf("ERROR: Course %d does not exist!\n", course_num);
+        return;
+    }
     printf("Registering %s for course %d\n", student_name, course_num);
     /*
     Student *s = find_student(student_name);
@@ -388,7 +400,7 @@ void unregister_for_course(char *student, int course_num)
     Student *s = find_student(student);
     if (s == NULL)
     {
-        printf("ERROR: Student %s doesn't exist!\n", student);
+        printf("ERROR: Student %s does not exist!\n", student);
         return;
     }
 
@@ -408,13 +420,13 @@ void is_stud_in_course(char *student, int course_num)
     Student *s = find_student(student);
     if (s == NULL)
     {
-        printf("ERROR: Student %s doesn't exist!\n", student);
+        printf("ERROR: Student %s does not exist!\n", student);
         return;
     }
     Course* c = find_course(course_num);
     if (c == NULL)
     {
-        printf("ERROR: Course doesn't exist.\n");
+        printf("ERROR: Course %d does not exist!\n", course_num);
         return;
     }
 
@@ -460,7 +472,7 @@ void courses_n_students(int strength)
 {
     if (strength > MAX_COURSE_STRENGTH)
     {
-        printf("More than %d students are not registered for a course!", MAX_COURSE_STRENGTH);
+        printf("More than %d students are not registered for any course!\n", MAX_COURSE_STRENGTH);
         return;
     }
     
@@ -475,13 +487,13 @@ void n_cred_courses_for_stud(int number, char *student)
 {
     if (number < 1 || number > 5)
     {
-        printf("ERROR: Invalid number of credits for a course: %d", number);
+        printf("ERROR: Invalid number of credits for a course: %d\n", number);
         return;
     }
     Student *s = find_student(student);
     if (s == NULL)
     {
-        printf("ERROR: Student %s does not exist", student);
+        printf("ERROR: Student %s does not exist!\n", student);
         return;
     }
     
@@ -496,7 +508,7 @@ void n_cred_courses(int number)
 {
     if (number < 1 || number > 5)
     {
-        printf("Invalid number of credits for a course: %d", number);
+        printf("ERROR: Invalid number of credits for a course: %d\n", number);
         return;
     }
 
@@ -527,7 +539,7 @@ void at_least_n_creds(int number)
 {
     if (number > 30)
     {
-        printf("Invalid number of credits a student can register for: %d", number);
+        printf("No student can register for more than 30 credits!\n");
         return;
     }
 
@@ -548,7 +560,7 @@ void student_grades(char *student)
     Student *s = find_student(student);
     if (s == NULL)
     {
-        printf("ERROR: Student %s does not exist.\n", student);
+        printf("ERROR: Student %s does not exist!\n", student);
         return;
     }
     printf("Here's a list of grades and GPA of %s:\n", student);
@@ -562,7 +574,7 @@ void students_below_gpa(float grade)
 {
     if (grade < 0 || grade > 10)
     {
-        printf("Invalid GPA: %g", grade);
+        printf("ERROR: Invalid GPA: %g\n", grade);
         return;
     }
     printf("Here's a list of students with GPA below %g:\n", grade);
@@ -576,7 +588,7 @@ void students_above_gpa(float grade)
 {
     if (grade < 0 || grade > 10)
     {
-        printf("Invalid GPA: %g", grade);
+        printf("ERROR: Invalid GPA: %g\n", grade);
         return;
     }
 
@@ -592,7 +604,7 @@ void students_above_grade(char *grade, int course_num)
     Course *course = find_course(course_num);
     if (course == NULL)
     {
-        printf("ERROR: Course doesn't exist.");
+        printf("ERROR: Course %d does not exist!\n", course_num);
         return;
     }
 
@@ -613,7 +625,7 @@ void students_below_grade(char *grade, int course_num)
     Course *course = find_course(course_num);
     if (course == NULL)
     {
-        printf("ERROR: Course doesn't exist.");
+        printf("ERROR: Course %d does not exist!\n", course_num);
         return;
     }
 
@@ -631,25 +643,43 @@ void students_below_grade(char *grade, int course_num)
 // Query 21: ASSIGN GRADE <grade> TO STUDENT <student name> FOR THE COURSE <course number>
 void assign_grade(char *grade, char *student, int course_num)
 {
-    printf("Assigned %s to %s in course %d\n", grade, student, course_num);
-    Student *s = find_student(student);
-    CoursePerf *p;
-    for (p = s->course_list; p; p = p->next)
-        if (p->course->course_code == course_num)
-            break;
-
-    if (p == NULL)
+    Course *c = find_course(course_num);
+    if (c == NULL)
     {
-        printf("ERROR: %s is not taking course %d\n", student, course_num);
+        printf("ERROR: Course %d does not exist!\n", course_num);
         return;
     }
+    printf("Assigned %s to %s in course %d\n", grade, student, course_num);
+    Student *s = find_student(student);
+    CoursePerf *p = student_courseperf(s, c);
 
-    p->grade = grade_to_num(grade);
+    if (p == NULL)
+        printf("ERROR: %s is not taking course %d\n", student, course_num);
+    else
+        p->grade = grade_to_num(grade);
 }
 
 // Query 22: ASSIGN GRADES FOR THE COURSE <course number>
 void assign_grades(int course_num)
 {
+    char grade[4];
+    Course *c = find_course(course_num);
+    for (int i = 0; i < studlist_len; i++)
+    {
+        CoursePerf *p = student_courseperf(students[i], c);
+        if (p == NULL)
+            continue;
+        printf("%s: ", students[i]->name);
+        scanf("%s", grade);
+        int g = grade_to_num(grade);
+        if (g < 0)
+        {
+            printf("ERROR: Invalid Grade. Please try again.\n");
+            i--;
+        }
+        else
+            p->grade = g;
+    }
 }
 
 // Initialize Courses
@@ -666,7 +696,7 @@ void initialize_courses()
 
     while (scanf("%[^\n]", &line) > 0)
     {
-        printf("Line: %s\n", line);
+        //printf("Line: %s\n", line);
 
         if (3 == sscanf(line, "%d, %[^,], %d", &course_code, title, &credits))
         {
@@ -676,15 +706,15 @@ void initialize_courses()
         }
         else
         {
-            printf("*** INCORRECTLY FORMATTED COURSE STRING: '%s'\n", line);
+            printf("ERROR: Incorrectly formatted input string: '%s'\n", line);
             ++invalid_courses;
         }
         while (getchar() != '\n')
             ;
     }
-    printf("=== %d COURSES HAVE BEEN ADDED ===\n", courses_added);
-    if (invalid_courses > 0)
-        printf("*** ENCOUNTERED %d INCORRECTLY FORMED LINES ***\n\n", invalid_courses);
+    //printf("=== %d COURSES HAVE BEEN ADDED ===\n", courses_added);
+    //if (invalid_courses > 0)
+    //   printf("*** ENCOUNTERED %d INCORRECTLY FORMED LINES ***\n\n", invalid_courses);
 }
 
 // Initialize Student Registrations
@@ -700,25 +730,30 @@ void initialize_student_regns()
 
     while (scanf("%[^\n]", &line) > 0)
     {
-        printf("Line: %s\n", line);
+        //printf("Line: %s\n", line);
 
         if (2 == sscanf(line, "%[^,], %d", student, &course))
         {
-            printf("Registering '%s' for the course with id %d\n", student, course);
-            add_student(student, course);
-            ++students_registered;
+            if (find_course(course) == NULL)
+                printf("ERROR: Course does not exist! Please try again.\n");
+            else
+            {
+                printf("Registering '%s' for the course with id %d\n", student, course);
+                add_student(student, course);
+                ++students_registered;
+            }
         }
         else
         {
-            printf("*** INCORRECTLY FORMATTED COURSE STRING: '%s'\n", line);
+            printf("ERROR: Incorrectly formatted input string: '%s'\n", line);
             ++invalid_lines;
         }
         while (getchar() != '\n')
             ;
     }
-    printf("=== %d STUDENTS HAVE BEEN REGISTERED SUCCESSFULLY ===\n", students_registered);
-    if (invalid_lines > 0)
-        printf("*** ENCOUNTERED %d INCORRECTLY FORMED LINES ***\n\n", invalid_lines);
+    //printf("=== %d STUDENTS HAVE BEEN REGISTERED SUCCESSFULLY ===\n", students_registered);
+    //if (invalid_lines > 0)
+    //    printf("*** ENCOUNTERED %d INCORRECTLY FORMED LINES ***\n\n", invalid_lines);
 }
 
 void process_query(char *query)
@@ -735,37 +770,52 @@ void process_query(char *query)
         students_for_course(course_num1);
     else if (2 == sscanf(query, "GET ALL COURSES WHICH HAVE MORE THAN %d %s", &number, lw) && strcmp("STUDENTS", lw) == 0)
         courses_n_students(number);
-    else if (2 == sscanf(query, "GET ALL COURSES %s HAS REGISTERED %s", student, lw) && strcmp("FOR", lw) == 0 ||
-             3 == sscanf(query, "GET ALL COURSES %s %s HAS REGISTERED %s", student, s2, lw) && strcmp("FOR", lw) == 0 ||
-             4 == sscanf(query, "GET ALL COURSES %s %s %s HAS REGISTERED %s", student, s2, s3, lw) && strcmp("FOR", lw) == 0 ||
-             5 == sscanf(query, "GET ALL COURSES %s %s %s %s HAS REGISTERED %s", student, s2, s3, s4, lw) && strcmp("FOR", lw) == 0)
+    else if (1 == sscanf(query, "GET ALL COURSES %s HAS REGISTERED %s", student, lw) && strcmp("FOR", lw) == 0 ||
+             2 == sscanf(query, "GET ALL COURSES %s %s HAS REGISTERED %s", student, s2, lw) && strcmp("FOR", lw) == 0 ||
+             3 == sscanf(query, "GET ALL COURSES %s %s %s HAS REGISTERED %s", student, s2, s3, lw) && strcmp("FOR", lw) == 0 ||
+             4 == sscanf(query, "GET ALL COURSES %s %s %s %s HAS REGISTERED %s", student, s2, s3, s4, lw) && strcmp("FOR", lw) == 0)
         courses_for_student(append_strings(student, s2, s3, s4));
     else if (2 == sscanf(query, "GET ALL STUDENTS REGISTERED FOR BOTH THE COURSES %d AND %d", &course_num1, &course_num2))
         students_for_both_courses(course_num1, course_num2);
     else if (1 == sscanf(query, "GET NUMBER OF STUDENTS REGISTERED FOR %d", &course_num1))
         num_stud_for_course(course_num1);
-    else if (2 == sscanf(query, "REGISTER STUDENT %s FOR THE COURSE %d", &student, &course_num1))
-        register_for_course(student, course_num1);
-    else if (2 == sscanf(query, "UNREGISTER STUDENT %s FOR THE COURSE %d", &student, &course_num1))
-        unregister_for_course(student, course_num1);
-    else if (2 == sscanf(query, "HAS STUDENT %s REGISTERED FOR THE COURSE %d ?", &student, &course_num1))
-        is_stud_in_course(student, course_num1);
+    else if (2 == sscanf(query, "REGISTER STUDENT %s FOR THE COURSE %d", student, &course_num1) ||
+             3 == sscanf(query, "REGISTER STUDENT %s %s FOR THE COURSE %d", student, s2, &course_num1) ||
+             4 == sscanf(query, "REGISTER STUDENT %s %s %s FOR THE COURSE %d", student, s2, s3, &course_num1) ||
+             5 == sscanf(query, "REGISTER STUDENT %s %s %s %s FOR THE COURSE %d", student, s2, s3, s4, &course_num1))
+        register_for_course(append_strings(student, s2, s3, s4), course_num1);
+    else if (2 == sscanf(query, "UNREGISTER STUDENT %s FOR THE COURSE %d", student, &course_num1) ||
+             3 == sscanf(query, "UNREGISTER STUDENT %s %s FOR THE COURSE %d", student, s2, &course_num1) ||
+             4 == sscanf(query, "UNREGISTER STUDENT %s %s %s FOR THE COURSE %d", student, s2, s3, &course_num1) ||
+             5 == sscanf(query, "UNREGISTER STUDENT %s %s %s %s FOR THE COURSE %d", student, s2, s3, s4, &course_num1))
+        unregister_for_course(append_strings(student, s2, s3, s4), course_num1);
+    else if (2 == sscanf(query, "HAS STUDENT %s REGISTERED FOR THE COURSE %d ?", student, &course_num1) ||
+             3 == sscanf(query, "HAS STUDENT %s %s REGISTERED FOR THE COURSE %d ?", student, s2, &course_num1) ||
+             4 == sscanf(query, "HAS STUDENT %s %s %s REGISTERED FOR THE COURSE %d ?", student, s2, s3, &course_num1) ||
+             5 == sscanf(query, "HAS STUDENT %s %s %s %s REGISTERED FOR THE COURSE %d ?", student, s2, s3, s4, &course_num1))
+        is_stud_in_course(append_strings(student, s2, s3, s4), course_num1);
     else if (1 == sscanf(query, "GET ALL STUDENTS WHO HAVE REGISTERED FOR MORE THAN %d COURSES", &number))
         students_n_courses(number);
     else if (0 == strcmp(query, "GET A LIST OF ALL STUDENTS"))
         print_students();
     else if (0 == strcmp(query, "GET A LIST OF ALL COURSES"))
         print_courses();
-    else if (2 == sscanf(query, "GET ALL %d CREDIT COURSES %s HAS REGISTERED FOR", &number, student))
-        n_cred_courses_for_stud(number, student);
+    else if (2 == sscanf(query, "GET ALL %d CREDIT COURSES %s HAS REGISTERED FOR", &number, student) ||
+             3 == sscanf(query, "GET ALL %d CREDIT COURSES %s %s HAS REGISTERED FOR", &number, student, s2) ||
+             4 == sscanf(query, "GET ALL %d CREDIT COURSES %s %s %s HAS REGISTERED FOR", &number, student, s2, s3) ||
+             5 == sscanf(query, "GET ALL %d CREDIT COURSES %s %s %s %s HAS REGISTERED FOR", &number, student, s2, s3, s4))
+        n_cred_courses_for_stud(number, append_strings(student, s2, s3, s4));
     else if (1 == sscanf(query, "GET ALL %d CREDIT COURSES", &number))
         n_cred_courses(number);
     else if (1 == sscanf(query, "GET THE TOTAL NUMBER OF CREDITS %s REGISTERED FOR", student))
         credits_student(student);
     else if (1 == sscanf(query, "GET ALL STUDENTS WHO REGISTERED FOR AT LEAST %d CREDITS", &number))
         at_least_n_creds(number);
-    else if (1 == sscanf(query, "GET A LIST OF GRADES AND THE GPA OF STUDENT %s", student))
-        student_grades(student);
+    else if (4 == sscanf(query, "GET A LIST OF GRADES AND THE GPA OF STUDENT %s %s %s %s", student, s2, s3, s4) ||
+             3 == sscanf(query, "GET A LIST OF GRADES AND THE GPA OF STUDENT %s %s %s", student, s2, s3) ||
+             2 == sscanf(query, "GET A LIST OF GRADES AND THE GPA OF STUDENT %s %s", student, s2) ||
+             1 == sscanf(query, "GET A LIST OF GRADES AND THE GPA OF STUDENT %s", student))
+        student_grades(append_strings(student, s2, s3, s4));
     else if (1 == sscanf(query, "GET A LIST OF ALL STUDENTS WHO HAS A GPA BELOW %f", &gpa))
         students_below_gpa(gpa);
     else if (1 == sscanf(query, "GET A LIST OF ALL STUDENTS WHO HAS A GPA ABOVE %f", &gpa))
@@ -774,8 +824,13 @@ void process_query(char *query)
         students_above_grade(grade, course_num1);
     else if (2 == sscanf(query, "GET A LIST OF ALL STUDENTS WHOSE GRADE IS BELOW %s IN %d", grade, &course_num1))
         students_below_grade(grade, course_num1);
-    else if (3 == sscanf(query, "ASSIGN GRADE %s TO STUDENT %s FOR THE COURSE %d", grade, student, &course_num1))
+    else if (3 == sscanf(query, "ASSIGN GRADE %s TO STUDENT %s FOR THE COURSE %d", grade, student, &course_num1) ||
+             4 == sscanf(query, "ASSIGN GRADE %s TO STUDENT %s %s FOR THE COURSE %d", grade, student, s2, &course_num1) ||
+             5 == sscanf(query, "ASSIGN GRADE %s TO STUDENT %s %s %s FOR THE COURSE %d", grade, student, s2, s3, &course_num1) ||
+             6 == sscanf(query, "ASSIGN GRADE %s TO STUDENT %s %s %s %s FOR THE COURSE %d", grade, student, s2, s3, s4, &course_num1))
         assign_grade(grade, student, course_num1);
+    else if (1 == sscanf(query, "ASSIGN GRADES FOR THE COURSE %d", &course_num1))
+        assign_grades(course_num1);
     else if (0 == strcmp(query, "INITIALIZE COURSES"))
         initialize_courses();
     else if (0 == strcmp(query, "INITIALIZE STUDENT REGISTRATIONS"))
@@ -797,14 +852,10 @@ int main()
 
     /*
     stringcopy(query, "This is a long string");
-    char s1[128] = "This is a long string.....";
-    printf("%s\n", append_strings(s1, "", "", ""));
-    char s2[128] = "Shreekar";
-    printf("%s\n", append_strings(s2, "Varma", NULL, ""));
-    char s3[128] = "E.";
-    printf("%s\n", append_strings(s3, "Shreepranav", "Varma", NULL));
-    char s4[128] = "Ding";
-    printf("%s\n", append_strings(s4, "Dong.", "Ping", "Pong"));
+    printf("%s\n", strconcat4("This is a long string.....", "", "", ""));
+    printf("%s\n", strconcat4("Shreekar", "Varma", NULL, ""));
+    printf("%s\n", strconcat4("E.", "Shreepranav", "Varma", NULL));
+    printf("%s\n", strconcat4("Ding", "Dong.", "Ping", "Pong"));
     */
 
     while (response == 'y')
