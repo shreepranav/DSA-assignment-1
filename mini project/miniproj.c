@@ -565,7 +565,7 @@ void student_grades(char *student)
     }
     printf("Here's a list of grades and GPA of %s:\n", student);
     for (CoursePerf *p = s->course_list; p; p = p->next)
-        printf("%d: %s\n", p->course->course_code, num_to_grade(p->grade));
+        printf("%40s (%d): %s\n", p->course->course_name, p->course->course_code, num_to_grade(p->grade));
     printf("GPA: %.1f\n", gpa(s));
 }
 
@@ -579,8 +579,11 @@ void students_below_gpa(float grade)
     }
     printf("Here's a list of students with GPA below %g:\n", grade);
     for (int i = 0; i < studlist_len; i++)
-        if (gpa(students[i]) < grade)
-            printf("%s\n", students[i]->name);
+    {
+        float g = gpa(students[i]);
+        if (g < grade)
+            printf("%s: %g\n", students[i]->name, g);
+    }
 }
 
 // Query 18: GET A LIST OF ALL STUDENTS WHO HAS A GPA ABOVE <number>
@@ -594,8 +597,11 @@ void students_above_gpa(float grade)
 
     printf("Here's a list of students with GPA above %g:\n", grade);
     for (int i = 0; i < studlist_len; i++)
-        if (gpa(students[i]) >= grade)
-            printf("%s\n", students[i]->name);
+    {
+        float g = gpa(students[i]);
+        if (g >= grade)
+            printf("%s: %g\n", students[i]->name, g);
+    }
 }
 
 // Query 19: GET A LIST OF ALL STUDENTS WHOSE GRADE IS <grade> AND ABOVE IN <course number>
@@ -644,13 +650,19 @@ void students_below_grade(char *grade, int course_num)
 void assign_grade(char *grade, char *student, int course_num)
 {
     Course *c = find_course(course_num);
+    Student *s = find_student(student);
+    if (s == NULL)
+    {
+        printf("ERROR: Student %s does not exist!\n", student);
+        return;
+    }
     if (c == NULL)
     {
         printf("ERROR: Course %d does not exist!\n", course_num);
         return;
     }
     printf("Assigned %s to %s in course %d\n", grade, student, course_num);
-    Student *s = find_student(student);
+    
     CoursePerf *p = student_courseperf(s, c);
 
     if (p == NULL)
@@ -678,7 +690,10 @@ void assign_grades(int course_num)
             i--;
         }
         else
+        {
             p->grade = g;
+            printf("Assigned %s grade to %s\n", grade, students[i]->name);
+        }
     }
 }
 
@@ -765,19 +780,20 @@ void process_query(char *query)
     char grade[4];
     char student[128] = {0}, s2[32] = {0}, s3[32] = {0}, s4[32] = {0};
     char lw[32] = {0}; // last word of the query
+    char ew[32] = {0}; // extra word to check if there is additional text after query
 
-    if (1 == sscanf(query, "GET ALL STUDENTS REGISTERED FOR THE COURSE %d", &course_num1))
+    if (1 == sscanf(query, "GET ALL STUDENTS REGISTERED FOR THE COURSE %d %s", &course_num1, ew))
         students_for_course(course_num1);
-    else if (2 == sscanf(query, "GET ALL COURSES WHICH HAVE MORE THAN %d %s", &number, lw) && strcmp("STUDENTS", lw) == 0)
+    else if (2 == sscanf(query, "GET ALL COURSES WHICH HAVE MORE THAN %d %s %s", &number, lw, ew) && strcmp("STUDENTS", lw) == 0)
         courses_n_students(number);
-    else if (1 == sscanf(query, "GET ALL COURSES %s HAS REGISTERED %s", student, lw) && strcmp("FOR", lw) == 0 ||
-             2 == sscanf(query, "GET ALL COURSES %s %s HAS REGISTERED %s", student, s2, lw) && strcmp("FOR", lw) == 0 ||
-             3 == sscanf(query, "GET ALL COURSES %s %s %s HAS REGISTERED %s", student, s2, s3, lw) && strcmp("FOR", lw) == 0 ||
-             4 == sscanf(query, "GET ALL COURSES %s %s %s %s HAS REGISTERED %s", student, s2, s3, s4, lw) && strcmp("FOR", lw) == 0)
+    else if (2 == sscanf(query, "GET ALL COURSES %s HAS REGISTERED %s %s", student, lw, ew) && strcmp("FOR", lw) == 0 ||
+             3 == sscanf(query, "GET ALL COURSES %s %s HAS REGISTERED %s %s", student, s2, lw, ew) && strcmp("FOR", lw) == 0 ||
+             4 == sscanf(query, "GET ALL COURSES %s %s %s HAS REGISTERED %s %s", student, s2, s3, lw, ew) && strcmp("FOR", lw) == 0 ||
+             5 == sscanf(query, "GET ALL COURSES %s %s %s %s HAS REGISTERED %s %s", student, s2, s3, s4, lw, ew) && strcmp("FOR", lw) == 0)
         courses_for_student(append_strings(student, s2, s3, s4));
-    else if (2 == sscanf(query, "GET ALL STUDENTS REGISTERED FOR BOTH THE COURSES %d AND %d", &course_num1, &course_num2))
+    else if (2 == sscanf(query, "GET ALL STUDENTS REGISTERED FOR BOTH THE COURSES %d AND %d %s", &course_num1, &course_num2, ew))
         students_for_both_courses(course_num1, course_num2);
-    else if (1 == sscanf(query, "GET NUMBER OF STUDENTS REGISTERED FOR %d", &course_num1))
+    else if (1 == sscanf(query, "GET NUMBER OF STUDENTS REGISTERED FOR %d %s", &course_num1, ew))
         num_stud_for_course(course_num1);
     else if (2 == sscanf(query, "REGISTER STUDENT %s FOR THE COURSE %d", student, &course_num1) ||
              3 == sscanf(query, "REGISTER STUDENT %s %s FOR THE COURSE %d", student, s2, &course_num1) ||
@@ -807,8 +823,11 @@ void process_query(char *query)
         n_cred_courses_for_stud(number, append_strings(student, s2, s3, s4));
     else if (1 == sscanf(query, "GET ALL %d CREDIT COURSES", &number))
         n_cred_courses(number);
-    else if (1 == sscanf(query, "GET THE TOTAL NUMBER OF CREDITS %s REGISTERED FOR", student))
-        credits_student(student);
+    else if (2 == sscanf(query, "GET THE TOTAL NUMBER OF CREDITS %s REGISTERED %s %s", student, lw, ew) && strcmp("FOR", lw) == 0 ||
+             3 == sscanf(query, "GET THE TOTAL NUMBER OF CREDITS %s %s REGISTERED %s %s", student, s2, lw, ew) && strcmp("FOR", lw) == 0 ||
+             4 == sscanf(query, "GET THE TOTAL NUMBER OF CREDITS %s %s %s REGISTERED %s %s", student, s2, s3, lw, ew) && strcmp("FOR", lw) == 0 ||
+             5 == sscanf(query, "GET THE TOTAL NUMBER OF CREDITS %s %s %s %s REGISTERED %s %s", student, s2, s3, s4, lw, ew) && strcmp("FOR", lw) == 0)
+        credits_student(append_strings(student, s2, s3, s4));
     else if (1 == sscanf(query, "GET ALL STUDENTS WHO REGISTERED FOR AT LEAST %d CREDITS", &number))
         at_least_n_creds(number);
     else if (4 == sscanf(query, "GET A LIST OF GRADES AND THE GPA OF STUDENT %s %s %s %s", student, s2, s3, s4) ||
@@ -828,7 +847,7 @@ void process_query(char *query)
              4 == sscanf(query, "ASSIGN GRADE %s TO STUDENT %s %s FOR THE COURSE %d", grade, student, s2, &course_num1) ||
              5 == sscanf(query, "ASSIGN GRADE %s TO STUDENT %s %s %s FOR THE COURSE %d", grade, student, s2, s3, &course_num1) ||
              6 == sscanf(query, "ASSIGN GRADE %s TO STUDENT %s %s %s %s FOR THE COURSE %d", grade, student, s2, s3, s4, &course_num1))
-        assign_grade(grade, student, course_num1);
+        assign_grade(grade, append_strings(student, s2, s3, s4), course_num1);
     else if (1 == sscanf(query, "ASSIGN GRADES FOR THE COURSE %d", &course_num1))
         assign_grades(course_num1);
     else if (0 == strcmp(query, "INITIALIZE COURSES"))
