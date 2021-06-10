@@ -20,7 +20,7 @@ E. Shreekar Varma, 319
 y
 GET ALL COURSES Pranav HAS REGISTERED FOR
 y
-GET THE TOTAL NUMBER OF CREDITS Pranav  REGISTERED FOR
+Get the  Total  Number  of CREDITS PRANAV   registered  foR
 y
 ASSIGN GRADE A TO STUDENT Pranav FOR THE COURSE 204
 y
@@ -30,7 +30,7 @@ ASSIGN GRADE B+ TO STUDENT Pranav FOR THE COURSE 319
 y
 ASSIGN GRADE A TO STUDENT Pranav FOR THE COURSE 251
 y
-GET A LIST OF GRADES AND THE GPA OF STUDENT Pranav
+Get a List   of  grades and  the   gpa  OF Student PRANav
 y
 UNREGISTER STUDENT Pranav FOR THE COURSE 319
 y
@@ -51,21 +51,21 @@ ASSIGN GRADE C TO STUDENT E. Shreekar Varma FOR THE COURSE 319
 y
 REGISTER STUDENT E. SHREEKAR VARMA FOR THE COURSE 101
 y
-GET A LIST OF GRADES AND THE GPA OF STUDENT E. ShreeKar Varma
+GET   a   LIST of GRADES and  THE GpA  OF  STUDENT E. SHREEkar Varma
 y
-GET A LIST OF ALL STUDENTS WHO HAS A GPA BELOW 7.9
+GET A LIST OF ALL  Students who  has a GPA BeloW 7.9
 y
 ASSIGN GRADE A+ TO STUDENT e. shreekar varma FOR THE COURSE 101
 y
 GET A LIST OF ALL STUDENTS WHO HAS A GPA BELOW 7.9
 y
-GET A LIST OF ALL STUDENTS WHO HAS A GPA ABOVE 8.1
+GET  a LIST  of  all   STUDENTS who  HAS A  GPA abovE 8.1
 y
-GET THE TOTAL NUMBER OF CREDITS Vasisht REGISTERED FOR
+GET THE TOTAL  NUMBER OF CREDITS Vasisht REGISTERED FOR
 y
-GET THE TOTAL NUMBER OF CREDITS Sundar REGISTERED FOR
+get the  total number  of   credits sundar registered for
 y
-GET THE TOTAL NUMBER OF CREDITS E. Shreekar VARMA REGISTERED FOR
+GET   THE TOTAL NUMBER  of credits E. Shreekar VARMA registerED FOR
 y
 GET   ALL  STudENTS REGISTERED FOR THE COURSE 204
 y
@@ -79,9 +79,9 @@ GET ALL COURSES WHICH HAVE MORE THAN 8 STUDENTS
 y
 GET ALL COURSES WHICH HAVE MORE THAN 0 STUDENTS
 y
-GET ALL COURSES E. Shreekar Varma HAS REGISTERED FOR
+GET  ALL   Courses E. Shreekar Varma has  REGISTERED for
 y
-GET ALL COURSES PRANAV HAS REGISTERED FOR
+get all courses  pranav has registered  for
 y
 GET ALL STUDENTS REGISTERED FOR BOTH THE COURSES 204 AND 101
 y
@@ -100,4 +100,14 @@ y
 GET ALL   4    CREDIT  courses PRANAV HAS  registered FOR
 y
 GET ALL 3  Credit  COURSES e. Shreekar Varma  has REGISTERED FOR
+y
+get all 3  CREDIT  courses
+y
+get  all   4  CREDIT   Courses
+y
+GET   all  Students whO registered  for  at   Least 10 Credits
+y
+get a   List of all  Students  whose  grade is  A  AND above in  204
+y
+get a   List of all  Students  whose  grade is Below  A+  in  204
 n
