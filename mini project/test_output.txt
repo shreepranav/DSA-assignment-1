@@ -99,8 +99,8 @@ Assigned B+ grade to Yagami
 CONTINUE(y/n)? 
 y
 ENTER YOUR QUERY:
-GET A LIST OF GRADES AND THE GPA OF STUDENT Pranav
-List of grades and GPA for 'Pranav':
+GET A LIST OF GRADES AND THE GPA OF STUDENT PRANAV
+List of grades and GPA for 'PRANAV':
 Data Structures and Algorithms (251): A
                     Set Theory (205): U
                  Real Analysis (204): A+
@@ -108,20 +108,20 @@ Data Structures and Algorithms (251): A
 GPA: 9.6
 CONTINUE(y/n)? y
 ENTER YOUR QUERY:
-ASSIGN GRADE A TO STUDENT E. Shreekar Varma FOR THE COURSE 204
-Assigned A grade to 'E. Shreekar Varma' in course 'Real Analysis (204)'
+ASSIGN GRADE A TO STUDENT E. SHREEKAR Varma FOR THE COURSE 204
+Assigned A grade to 'E. SHREEKAR Varma' in course 'Real Analysis (204)'
 CONTINUE(y/n)? y
 ENTER YOUR QUERY:
 ASSIGN GRADE C TO STUDENT E. Shreekar Varma FOR THE COURSE 319
 Assigned C grade to 'E. Shreekar Varma' in course 'Algebraic Combinatorics (319)'
 CONTINUE(y/n)? y
 ENTER YOUR QUERY:
-REGISTER STUDENT E. Shreekar Varma FOR THE COURSE 101
-Registered 'E. Shreekar Varma' for course 'Introductory Course (101)'
+REGISTER STUDENT E. SHREEKAR VARMA FOR THE COURSE 101
+Registered 'E. SHREEKAR VARMA' for course 'Introductory Course (101)'
 CONTINUE(y/n)? y
 ENTER YOUR QUERY:
-GET A LIST OF GRADES AND THE GPA OF STUDENT E. Shreekar Varma
-List of grades and GPA for 'E. Shreekar Varma':
+GET A LIST OF GRADES AND THE GPA OF STUDENT E. ShreeKar Varma
+List of grades and GPA for 'E. ShreeKar Varma':
                  Real Analysis (204): A
            Introductory Course (101): U
        Algebraic Combinatorics (319): C
@@ -133,8 +133,8 @@ List of students with GPA below 7.9:
 E. Shreekar Varma: 7.7
 CONTINUE(y/n)? y
 ENTER YOUR QUERY:
-ASSIGN GRADE A+ TO STUDENT E. Shreekar Varma FOR THE COURSE 101
-Assigned A+ grade to 'E. Shreekar Varma' in course 'Introductory Course (101)'
+ASSIGN GRADE A+ TO STUDENT e. shreekar varma FOR THE COURSE 101
+Assigned A+ grade to 'e. shreekar varma' in course 'Introductory Course (101)'
 CONTINUE(y/n)? y
 ENTER YOUR QUERY:
 GET A LIST OF ALL STUDENTS WHO HAS A GPA BELOW 7.9
@@ -157,11 +157,11 @@ GET THE TOTAL NUMBER OF CREDITS Sundar REGISTERED FOR
 Total number of credits 'Sundar' has reistered for: 4
 CONTINUE(y/n)? y
 ENTER YOUR QUERY:
-GET THE TOTAL NUMBER OF CREDITS E. Shreekar Varma REGISTERED FOR
-Total number of credits 'E. Shreekar Varma' has reistered for: 10
+GET THE TOTAL NUMBER OF CREDITS E. Shreekar VARMA REGISTERED FOR
+Total number of credits 'E. Shreekar VARMA' has reistered for: 10
 CONTINUE(y/n)? y
 ENTER YOUR QUERY:
-GET ALL STUDENTS REGISTERED FOR THE COURSE 204
+GET   ALL  STudENTS REGISTERED FOR THE COURSE 204
 List of students registered for course 'Real Analysis (204)':
 Pranav
 Sundar
@@ -170,17 +170,17 @@ E. Shreekar Varma
 Yagami
 CONTINUE(y/n)? y
 ENTER YOUR QUERY:
-GET ALL STUDENTS REGISTERED FOR THE COURSE 319
+Get all  studeNTS REGISTERED FOR THE COURSE 319
 List of students registered for course 'Algebraic Combinatorics (319)':
 E. Shreekar Varma
 CONTINUE(y/n)? y
 ENTER YOUR QUERY:
-GET ALL STUDENTS REGISTERED FOR THE COURSE 251
+get  alL  Students REGISTERED FOR THE COURSE 251
 List of students registered for course 'Data Structures and Algorithms (251)':
 Pranav
 CONTINUE(y/n)? y
 ENTER YOUR QUERY:
-GET ALL COURSES WHICH HAVE MORE THAN 3 STUDENTS
+GET  ALL COURSES WHICH HAVE MORE THAN 3 STUDENTS
 Here's all courses with at least 3 students:
 204, Real Analysis, 4
 CONTINUE(y/n)? y
@@ -205,8 +205,8 @@ Here's all the courses E. Shreekar Varma has registered for:
 319, Algebraic Combinatorics, 3
 CONTINUE(y/n)? y
 ENTER YOUR QUERY:
-GET ALL COURSES Pranav HAS REGISTERED FOR
-Here's all the courses Pranav has registered for:
+GET ALL COURSES PRANAV HAS REGISTERED FOR
+Here's all the courses PRANAV has registered for:
 251, Data Structures and Algorithms, 4
 205, Set Theory, 4
 204, Real Analysis, 4
@@ -229,4 +229,40 @@ CONTINUE(y/n)? y
 ENTER YOUR QUERY:
 GET NUMBER OF STUDENTS REGISTERED FOR 101
 2 students have registered for course 'Introductory Course (101)':
+CONTINUE(y/n)? y
+ENTER YOUR QUERY:
+Get a list of all Students
+Here is a list of all students:
+Pranav
+Sundar
+Vasisht
+E. Shreekar Varma
+Yagami
+CONTINUE(y/n)? y
+ENTER YOUR QUERY:
+GET a List Of alL CoursES
+Here is a list of all courses:
+251, Data Structures and Algorithms, 4
+205, Set Theory, 4
+204, Real Analysis, 4
+101, Introductory Course, 3
+319, Algebraic Combinatorics, 3
+CONTINUE(y/n)? y
+ENTER YOUR QUERY:
+GET ALL 3 CREDIT COURSES PRANAV HAS REGISTERED FOR
+Here's all the 3 credit courses PRANAV has registered for:
+101, Introductory Course, 3
+CONTINUE(y/n)? y
+ENTER YOUR QUERY:
+GET ALL   4    CREDIT  courses PRANAV HAS  registered FOR
+Here's all the 4 credit courses PRANAV has registered for:
+251, Data Structures and Algorithms, 4
+205, Set Theory, 4
+204, Real Analysis, 4
+CONTINUE(y/n)? y
+ENTER YOUR QUERY:
+GET ALL 3  Credit  COURSES e. Shreekar Varma  has REGISTERED FOR
+Here's all the 3 credit courses e. Shreekar Varma has registered for:
+101, Introductory Course, 3
+319, Algebraic Combinatorics, 3
 CONTINUE(y/n)? n
