@@ -30,6 +30,7 @@
 #define U "%*1[Uu]"
 #define V "%*1[Vv]"
 #define W "%*1[Ww]"
+#define Z "%*1[Zz]"
 
 #define SP " "
 
@@ -53,6 +54,7 @@
 #define HAS H A S SP
 #define HAVE H A V E SP
 #define IN I N SP
+#define INITIALIZE I N I T I A L I Z E SP
 #define IS I S SP
 #define LEAST L E A S T SP
 #define MORE M O R E SP
@@ -942,10 +944,13 @@ void process_query(char *query)
                 MORE THAN "%d %s %s", &number, lw, ew) &&
                 strcmp("COURSES", lw) == 0)
         students_n_courses(number);
-    else if (0 == strcmp(query, "GET A LIST OF ALL STUDENTS"))
-        print_students();
-    else if (0 == strcmp(query, "GET A LIST OF ALL COURSES"))
-        print_courses();
+    else if (1 == sscanf(query, GET A_LIST OF ALL "%s", lw, ew))
+    {
+        if (strcmp("students", lw) == 0)
+            print_students();
+        else if (strcmp("courses", lw) == 0)
+            print_courses();
+    }
     else if (3 == sscanf(query, GET ALL "%d " CREDIT COURSES "%s " HAS
                 REGISTERED "%s %s", &number, s1, lw, ew) &&
                 strcmp("for", lw) == 0 ||
@@ -960,7 +965,7 @@ void process_query(char *query)
                 strcmp("for", lw) == 0)
         n_cred_courses_for_stud(number, append_strings(s1, s2, s3, s4));
     else if (2 == sscanf(query, GET ALL "%d " CREDIT "%s %s", &number, lw, ew)
-                && strcmp("COURSES", lw) == 0)
+                && strcmp("courses", lw) == 0)
         n_cred_courses(number);
     else if (2 == sscanf(query, GET THE TOTAL NUMBER OF CREDITS "%s "
                 REGISTERED "%s %s", s1, lw, ew) && strcmp("for", lw) == 0 ||
@@ -1009,9 +1014,11 @@ void process_query(char *query)
     else if (1 == sscanf(query, ASSIGN GRADES FOR THE COURSE "%d %s",
             &course_num1, ew))
         assign_grades(course_num1);
-    else if (0 == strcmp(query, "INITIALIZE COURSES"))
+    else if (1 == sscanf(query, INITIALIZE "%s", lw, ew) &&
+            strcmp("courses", lw) == 0)
         initialize_courses();
-    else if (0 == strcmp(query, "INITIALIZE STUDENT REGISTRATIONS"))
+    else if (1 == sscanf(query, INITIALIZE STUDENT "%s", lw, ew) &&
+            strcmp("registrations", lw) == 0)
         initialize_student_regns();
     else
         printf("*** BAD QUERY: '%s' ***\n", query);
@@ -1025,7 +1032,7 @@ int main()
 
     while (response == 'y')
     {
-        printf("ENTER YOUR QUERY:\n");
+        printf("\nENTER YOUR QUERY:\n");
         scanf("%[^\n]", query);
         print_input(query);
         while (getchar() != '\n')

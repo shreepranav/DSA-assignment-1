@@ -1,4 +1,4 @@
-INITIALIZE COURSES
+Initialize   Courses
 204, Real Analysis, 4
 205, Set Theory, 4
 319, Algebraic Combinatorics, 3
@@ -95,9 +95,9 @@ GET NUMBER OF STUDENTS REGISTERED FOR 251
 y
 GET NUMBER OF STUDENTS REGISTERED FOR 101
 y
-Get a list of all Students
+Get   a list   of  all   Students
 y
-GET a List Of alL CoursES
+GET a  List Of  alL CoursES
 y
 GET ALL 3 CREDIT COURSES PRANAV HAS REGISTERED FOR
 y
