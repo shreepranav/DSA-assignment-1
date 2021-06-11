@@ -24,11 +24,11 @@ Get the  Total  Number  of CREDITS PRANAV   registered  foR
 y
 ASSIGN GRADE A TO STUDENT Pranav FOR THE COURSE 204
 y
-ASSIGN GRADE A+ TO STUDENT Pranav FOR THE COURSE 101
+ASSIGN  grade  A+ TO  student PRANAV FOR  the  COURSE 101
 y
-ASSIGN GRADE B+ TO STUDENT Pranav FOR THE COURSE 319
+assign  GRADE b+ to  STUDENT pranav FOR   the  course 319
 y
-ASSIGN GRADE A TO STUDENT Pranav FOR THE COURSE 251
+assign grade a to student pranav for the course 251
 y
 Get a List   of  grades and  the   gpa  OF Student PRANav
 y
@@ -36,7 +36,9 @@ UNREGISTER STUDENT Pranav FOR THE COURSE 319
 y
 REGISTER STUDENT Yagami FOR THE COURSE 204
 y
-ASSIGN GRADES FOR THE COURSE 204
+Assign grades for  the  Course 204 error
+y
+Assign grades for  the  Course 204
 A+
 A
 A
@@ -47,7 +49,9 @@ GET A LIST OF GRADES AND THE GPA OF STUDENT PRANAV
 y
 ASSIGN GRADE A TO STUDENT E. SHREEKAR Varma FOR THE COURSE 204
 y
-ASSIGN GRADE C TO STUDENT E. Shreekar Varma FOR THE COURSE 319
+assign  GRADE   c   TO Student  e. shreekar varma   for  the  course 319
+y
+assign grade A to student e. shreekar varma for the course 205
 y
 REGISTER STUDENT E. SHREEKAR VARMA FOR THE COURSE 101
 y
