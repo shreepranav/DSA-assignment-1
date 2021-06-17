@@ -112,11 +112,11 @@ int studlist_len = 0;
 // in interactive mode.
 void print_input(const char* str)
 {
-    printf("%s\n", str);
+    //printf("%s\n", str);
 }
 void print_input_char(const char c)
 {
-    printf("%c", c);
+    //printf("%c", c);
 }
 
 char lower(char c)
